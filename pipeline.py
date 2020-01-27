@@ -13,9 +13,13 @@ AV_DIR = "../Alice/Meshroom-2019.2.0/aliceVision/"
 WORKING_DIR = "/tmp/AV_tmp/"
 DC_DIR = "data/"
 DATA_DIR = DC_DIR + "p1/"
-CALIBRATION_DIR = DC_DIR + "c0/"
+CALIBRATION_DIR = DC_DIR + "c2/"
 SFMDATA_FILENAME = "data"
 CAM_SENSOR_DB = "share/aliceVision/cameraSensors.db"
+
+VERBOSE_LEVEL = "info"
+# fatal, error, warning, info, debug, trace
+
 
 ################################
 ## Setup:                     ##
@@ -70,9 +74,10 @@ def cameraInit():
     print("STEP 0: CameraInit")
 
     cmd = av + "cameraInit --imageFolder " + DATA_DIR + " -o " + CameraInit_out
-    cmd += " --defaultFieldOfView 45.0"
+    cmd += " --defaultFieldOfView 60.0"
     cmd += " --sensorDatabase " + sensor_db
     cmd += " --allowSingleView 1"
+    cmd += " -v " + VERBOSE_LEVEL
     os.system(cmd)
 
 ################################
@@ -82,6 +87,9 @@ FeatureExtraction_out = SfMData + "FeatureExtraction"
 def featureExtraction():
     print("\nSTEP 1: FeatureExtraction")
     cmd = av + "featureExtraction -i " + CameraInit_out + " -o " + FeatureExtraction_out
+    cmd += " -p " + "normal"
+    # low, medium, normal, high, ultra
+    cmd += " -v " + VERBOSE_LEVEL
     os.system(cmd)
 
 ################################
@@ -93,6 +101,8 @@ def imageMatching():
     cmd = av + "imageMatching -i " + CameraInit_out + " -o " + ImageMatching_out
     cmd += " --featuresFolders " + FeatureExtraction_out
     cmd += " --tree /home/lev/stud/PD/Alice/Meshroom-2019.2.0/aliceVision/share/aliceVision/vlfeat_K80L3.SIFT.tree"
+    cmd += " --maxDescriptors 0"
+    cmd += " -v " + VERBOSE_LEVEL
     os.system(cmd)
 
 ################################
@@ -103,6 +113,7 @@ def featureMatching():
     cmd = av + "featureMatching -i " + CameraInit_out + " -o " + FeatureMatching_out
     cmd += " --featuresFolders " + FeatureExtraction_out
     cmd += " --imagePairsList " + ImageMatching_out
+    cmd += " -v " + VERBOSE_LEVEL
     os.system(cmd)
 
 ################################
@@ -114,6 +125,7 @@ def structureFromMotion():
     cmd = av + "incrementalSfM -i " + CameraInit_out + " -o " + StructureFromMotion_out
     cmd += " --featuresFolders " + FeatureExtraction_out
     cmd += " --matchesFolders " + FeatureMatching_out
+    cmd += " -v " + VERBOSE_LEVEL
     os.system(cmd)
 
 
@@ -163,9 +175,6 @@ if len(sys.argv) > 2:
         if len(sys.argv) == 3:
             pipeline[ int(sys.argv[2]) ]()
             sys.exit()
-
-#for i in range(0, 5):
-#    pipeline[i]()
 
 for ff in pipeline:
     ff()

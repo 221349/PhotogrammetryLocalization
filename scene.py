@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import matplotlib.patheffects as PathEffects
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
 import numpy as np
 
@@ -16,9 +17,9 @@ LINE_SIZE = 2
 
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.set_xlabel('X')
-ax.set_ylabel('Y')
-ax.set_zlabel('Z')
+ax.set_xlabel('X', fontsize=14)
+ax.set_ylabel('Y', fontsize=14)
+ax.set_zlabel('Z', fontsize=14)
 
 
 ################################
@@ -82,5 +83,26 @@ def add_feature(
         ax.plot([cam[0], f_pos[0]],[cam[1], f_pos[1]],[cam[2], f_pos[2]], linestyle = linestyle, color=color, linewidth = linewidth)
         ax.scatter([f_pos[0]],[f_pos[1]],[f_pos[2]], marker='*', c=[color], s=point_size)
         ax.text(*txt_pos, " " + name, color='#cc00cc', fontsize=14)
+
 def draw():
     plt.show()
+    a = 0
+
+def image(
+ name = "",
+ path = "",
+ points = [[]],
+ p_names = []
+):
+    img =  plt.imread(fname=path)
+    figure = plt.figure()
+    out = figure.add_subplot()
+    plt.title(name)
+    for i in range(0,len(points)):
+        out.plot(points[i][0], points[i][1], marker='+', markersize=15, c='#000000', markeredgewidth=2)
+        out.plot(points[i][0], points[i][1], marker='+', markersize=15, c='#ff00ff', markeredgewidth=1)
+        out.plot(points[i][0], points[i][1], marker='o', markersize=15, c='#000000', markeredgewidth=2, fillstyle='none')
+        out.plot(points[i][0], points[i][1], marker='o', markersize=15, c='#ff00ff', fillstyle='none')
+        txt = out.text(*points[i], "  " + p_names[i], color='#ff00ff', fontsize=14, weight='light')
+        txt.set_path_effects([PathEffects.withStroke(linewidth=1, foreground='#000000')])
+    out.imshow(img)

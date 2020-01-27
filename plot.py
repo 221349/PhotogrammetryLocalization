@@ -16,24 +16,25 @@ import scene
 ## DEFAULTS:                  ##
 
 JSON_FILE = "/tmp/AV_tmp/dataStructureFromMotion.sfm"
-CAM_SCALE = 0.1
+CAM_SCALE = 0.2
 CAM_ELONG = 4
 MARKES_SIZE = 10
-
 MIN_VIEWS_PER_FEATURE = 2
 
 select_pose = False
 positions = []
-
+select_features = 0
 ################################
 ## ARGS:                      ##
 
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('--input', '-i', default=JSON_FILE)
 arg_parser.add_argument('--select_pose', nargs='+')
-arg_parser.add_argument('--cam_scale', default=CAM_SCALE)
-arg_parser.add_argument('--cam_elong', default=CAM_ELONG)
-arg_parser.add_argument('--marker_size', default=MARKES_SIZE)
+arg_parser.add_argument('--cam_scale', default=CAM_SCALE, type=float)
+arg_parser.add_argument('--cam_elong', default=CAM_ELONG, type=float)
+arg_parser.add_argument('--marker_size', default=MARKES_SIZE, type=float)
+arg_parser.add_argument('--select_features', type=int)
+arg_parser.add_argument('--min_views_per_feature', default=MIN_VIEWS_PER_FEATURE, type=int)
 
 args = arg_parser.parse_args()
 
@@ -41,6 +42,8 @@ if args.input: input_json = args.input
 if args.cam_scale: cam_scale = args.cam_scale
 if args.cam_elong: cam_elong = args.cam_elong
 if args.marker_size: marker_size = args.marker_size
+if args.select_features: select_features = args.select_features
+if args.min_views_per_feature: min_views = args.min_views_per_feature
 if args.select_pose:
     select_pose = True
     positions = args.select_pose
@@ -149,18 +152,18 @@ class Features():
              name = item.name,
              point_size = marker_size * 10)
 
-features = Features(number = 2, min_views = 2)
-
-features.plot_features()
-
-
-
-def add_rays(
- f_number
-):
-    z = [0, 1]
-    print(z)
-    ax.plot(z, z, z)
+def plot_images(features):
+    for view in views.cameras:
+        points = []
+        p_names = []
+        for feature in features.features:
+            for point_id in feature.views:
+                if view.id == point_id:
+                    points.append(
+                     feature.views_pos[feature.views.index(view.id)]
+                    )
+                    p_names.append(feature.name)
+        scene.image(name = view.name, path = view.path, points = points, p_names = p_names)
 
 
 ################################
@@ -175,5 +178,9 @@ features.cs = [[float(col_item)/256 for col_item in item['color'] ] for item in 
 scene.add_points(points = features, point_size=marker_size)
 
 views.plot_cameras()
+if(select_features):
+    ch_features = Features(number = select_features, min_views = min_views)
+    ch_features.plot_features()
+    plot_images(features = ch_features)
 
 scene.draw()

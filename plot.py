@@ -1,21 +1,16 @@
 #!/usr/bin/env python
-from mpl_toolkits.mplot3d import Axes3D
 
-import os, sys
+import os
 import argparse
 import json
 import string
-
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d.art3d import Poly3DCollection, Line3DCollection
-import numpy as np
 
 import scene
 
 ################################
 ## DEFAULTS:                  ##
 
-JSON_FILE = "/tmp/AV_tmp/dataStructureFromMotion.sfm"
+JSON_FILE = ""
 CAM_SCALE = 0.2
 CAM_ELONG = 4
 MARKES_SIZE = 10
@@ -28,7 +23,7 @@ select_features = 0
 ## ARGS:                      ##
 
 arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('--input', '-i', default=JSON_FILE)
+arg_parser.add_argument('--input', '-i', default="")
 arg_parser.add_argument('--select_pose', nargs='+')
 arg_parser.add_argument('--cam_scale', default=CAM_SCALE, type=float)
 arg_parser.add_argument('--cam_elong', default=CAM_ELONG, type=float)
@@ -38,7 +33,7 @@ arg_parser.add_argument('--min_views_per_feature', default=MIN_VIEWS_PER_FEATURE
 
 args = arg_parser.parse_args()
 
-if args.input: input_json = args.input
+if args.input: input_json = "/tmp/AV_tmp/" + args.input + "/dataStructureFromMotion.sfm"
 if args.cam_scale: cam_scale = args.cam_scale
 if args.cam_elong: cam_elong = args.cam_elong
 if args.marker_size: marker_size = args.marker_size

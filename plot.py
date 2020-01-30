@@ -128,7 +128,13 @@ class Features():
                     feature.views_pos.append([float(x) for x in observation['x']] )
             if view >= min_views:
                 feature.id = item['landmarkId']
-                feature.name = string.ascii_uppercase[len(self.features)]
+                if len(self.features) < 26:
+                    feature.name = string.ascii_uppercase[len(self.features)]
+                else:
+                    if len(self.features) < 52:
+                        feature.name = string.ascii_lowercase[len(self.features) - 26]
+                    else:
+                        feature.name = "-"
                 feature.pos = [float(x) for x in item['X']]
                 feature.color = [float(col_item)/256 for col_item in item['color'] ]
                 self.features.append(feature)

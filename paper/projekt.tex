@@ -1,7 +1,7 @@
 %Przykładowy plik ułatwiający złożenie projektu dyplomowego inżynierskiego.
 %UWAGA: Generowany napis na stronie tytułowej o treści PROJEKT DYPLOMOWY INŻYNIERSKI został zaproponowany przeze mnie i nie jest, póki co, potwierdzony przez władze wydziału. Przed ostatecznym oddaniem tak złożonej pracy należy upewnić się jaka powinna być treść tego napisu. W momencie gdy uzyskam informację na temat treści tego napisu, dokonam niezbędnych zmian w źródłach.
 
-\documentclass[eng,printmode]{mgr}
+\documentclass[eng, printmode, openany]{mgr}
 %opcje klasy dokumentu mgr.cls zostały opisane w dołączonej instrukcji
 
 
@@ -33,69 +33,33 @@
 %dane do złożenia strony tytułowej
 \title{Zastosowanie algorytmów fotogrametrii dla estymacji położenia obserwatora w przestrzeni trójwymiarowej}
 \engtitle{A photogrammetric approach for observer's position estimation in 3D}
-\author{Lev Sergeyev}
-\supervisor{Dr hab. inż. Przemysław Śliwiński, prof. PWr}
-\guardian{Prof. dr hab. inż. Czesław Smutnicki, prof. PWr}
+\author{? Lev Sergeyev 221349}
+\supervisor{? Dr hab. inż. Przemysław Śliwiński, prof. PWr}
+\guardian{? Prof. dr hab. inż. Czesław Smutnicki, prof. PWr}
 
 \date{2020} %standardowo u dołu strony tytułowej umieszczany jest bieżący rok, to polecenie pozwala wstawić dowolny rok
 
 \field{Automatyka i Robotyka (AIR)}
 \specialisation{Systemy informatyczne w automatyce (ASI)}
 
-%tutaj zaczyna się właściwa treść dokumentu
-\begin{document}
-%\bibliographystyle{plabbrv} %tylko gdy używamy BibTeXa, ustawia polski styl bibliografii
-
-\maketitle %polecenie generujące stronę tytułową
-%\dedication{6cm}{To jest przykładowa treść opcjonalnej dedykacji, należy ją zmienić lub usunąć w całości polecenie \texttt{$\backslash$dedication}}
-
-\tableofcontents %spis treści
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 %% DOCUMENT:            %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%poniżej znajduje się przykładowa treść dalszej części dokumentu, zainteresowanych zachęcam do rozszyfrowania frazy "Lorem ipsum" :)
-\chapter{Wstęp}
-\section{Problem}
-\section{Cel pracy}
+\begin{document}
+%\bibliographystyle{plabbrv} %tylko gdy używamy BibTeXa, ustawia polski styl bibliografii
 
-\chapter{Wprowadzenie teoretyczne}
-\section{Fotogrammetria}
-\subsection{krok 1}
-\subsection{krok ..}
-\subsection{krok 5}
-\section{Lokalizacja kamery}
+\maketitle
+\tableofcontents %spis treści
 
-\chapter{Budowa śródowiska}
-\section{Framework AliceVision}
-\subsection{CameraInit}
-\subsection{FeatureExtraction}
-\subsection{ImageMatching}
-\subsection{FeatureMatching}
-\subsection{StructureFromMotion}
-\section{Implementacja śródowiska}
-\subsection{Pipeline}
-\subsection{Rysowanie}
-\subsection{Pomiar czasu}
+\relax
 
-\chapter{Przebieg badań}
-\section{Wpływ danych na wynik i czas obliczenia}
-\subsection{Jakość obrazów}
-\subsection{Ilość obrazów}
-\subsection{Zawartość obrazów}
-\section{Wpływ parametrów na wynik i czas obliczenia}
-\subsection{Jakość elementów kluczowych}
-\subsection{Ilość elementów kluczowych}
-\section{Eksperyment z pomiarem odległości}
-
-\chapter{Wnioski}
-
-\begin{itemize}
-\item list item
-\end{itemize}
-
+\include{1_Wstep}
+\include{2_Teoria}
+\include{3_Srodowisko}
+\include{4_Badania}
+\include{5_Wnioski}
 
 \appendix
 \chapter{Dodatek}

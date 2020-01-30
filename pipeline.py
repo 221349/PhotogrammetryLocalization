@@ -33,6 +33,7 @@ arg_parser.add_argument('--input', '-i', default="")
 arg_parser.add_argument('--describer_preset', '-p', default=D_DESCRIBER_PRESET)
 arg_parser.add_argument('--max_descriptors', '-d', default=D_MAX_DESCRIPTORS)
 arg_parser.add_argument('--n_matches', '-n', default=D_N_MATCHES)
+arg_parser.add_argument('--skip_ImageMatching', '-s', action='store_true')
 args = arg_parser.parse_args()
 
 ################################
@@ -109,7 +110,8 @@ def featureMatching(
 
     cmd = av + "featureMatching -i " + cameraInit_file + " -o " + featureMatching_dir
     cmd += " --featuresFolders " + featureExtraction_dir
-    cmd += " --imagePairsList " + imageMatching_file
+    if imageMatching_file:
+        cmd += " --imagePairsList " + imageMatching_file
     return run("3_FeatureMatching", cmd, v_level, log_dir)
 
 ################################
@@ -131,7 +133,7 @@ def structureFromMotion(
 ################################
 ## PIPELINE                   ##
 
-def pipeline(input, preset, max_descriptors, n_matches):
+def pipeline(input, preset, max_descriptors, n_matches, skip_ImageMatching = True):
     working_dir = "/tmp/AV_tmp/" + input
     if not os.path.isdir(working_dir):
         os.makedirs(working_dir, exist_ok=True)
@@ -145,16 +147,23 @@ def pipeline(input, preset, max_descriptors, n_matches):
     cameraInit_file = SfMData + "CameraInit.sfm"
     cameraInit(data_dir = input, cameraInit_file = cameraInit_file, log_dir = log_dir)
     time.sleep(1)
+
     featureExtraction_dir = SfMData + "FeatureExtraction"
     featureExtraction(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, describerPreset = preset, log_dir = log_dir)
     time.sleep(1)
-    imageMatching_file = SfMData + "ImageMatching.txt"
-    imageMatching(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, imageMatching_file = imageMatching_file, maxDescriptors = max_descriptors, matchNnumber = n_matches, log_dir = log_dir)
-    time.sleep(1)
+
+    if skip_ImageMatching:
+        imageMatching_file = False
+    else:
+        imageMatching_file = SfMData + "ImageMatching.txt"
+        imageMatching(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, imageMatching_file = imageMatching_file, maxDescriptors = max_descriptors, matchNnumber = n_matches, log_dir = log_dir)
+        time.sleep(1)
+
     featureMatching_dir = SfMData + "FeatureMatching"
     featureMatching(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, imageMatching_file = imageMatching_file, featureMatching_dir = featureMatching_dir, log_dir = log_dir)
     time.sleep(5)
+
     sfm_file = SfMData + "StructureFromMotion.sfm"
     structureFromMotion(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, featureMatching_dir = featureMatching_dir, sfm_file = sfm_file, log_dir = log_dir)
 
-pipeline(args.input, args.describer_preset, args.max_descriptors, args.n_matches)
+pipeline(args.input, args.describer_preset, args.max_descriptors, args.n_matches, args.skip_ImageMatching)

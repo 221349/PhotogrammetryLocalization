@@ -1,0 +1,69 @@
+\graphicspath{ {./img/2_Theory/} }
+
+
+\chapter{Wprowadzenie teoretyczne}
+W tym rozdziale proces jest opisany na przykładzie działania AliceVision.
+\section{Fotogrametria}
+Fotogrametria - dziedzina nauki, sztuki i technologia mająca na celu wyznaczanie informacji i odtworzanie kształtów jednego lub więcej obiektu fizycznego na podstawie zdjęć obiektu.
+Fotogrametria można podizelić na dwa rodzaje: płaską i przestrzenną. Fotogrametria płaska wymaga co najmniej jednego zdjęcia i jej wynikiem jest charakterystyka obiektu w płaszczyźnie. Fotogrametria przestrzenna wymaga dwóch lub więcej zdjęć, jest używana do odtwarzania obiektów w przestrzeni trójwymiarowej.
+
+W tej pracy stosowana jest wyłącznie fotogrametria przestrzenna.
+
+Pozwala wyznaczyć takie charakterystyki jak:
+\begin{itemize}
+   \item krszałt
+   \item rozmiar
+   \item położenie wzajemne w przestrzeni
+   \item color i teksturę
+\end{itemize}
+
+Dodatkowo technologia fotogrametrii pozwala na wyznaczenie położenia kamery(obserwatora) w chwili robienia zdjęcia fotogrametrycznego.
+Położenie kamery w przestrzeni trójwymiarowej jest wyznaczane na podstawie bazy sceny i wybranego zdjęcia zawierającego całość lub część sceny.
+
+\subsection{Wyznaczanie punktów kluczowych}
+Obraz z zestawu zdjęć fotogrametrycznych posiada cechy kluczowe które mogą być na tyle charakterystyczne, że można z wysokim prawdopodobieństwem je znaleźć w bazie cech innego zdjęcia zawierającego ten sam obiekt.
+
+Jednym ze sposobów wyznaczania i zapisu takich elementów jest stosowanie opatentowanych algorytmów i deskryptorów \textbf{SIFT} (Scale Invariant Feature Transform). Ta transformata jest powszechnie stosowana w przetwarzaniu i rozpoznawaniu obrazów do wykrywania punktów charakterystycznych.
+
+Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowych obraz jest poddawany szeregu wstępnych zabiegów optymalizacji i filtracji. Taki proces wyznaczania cech można przedstawić w taki szereg kroków:
+\begin{enumerate}
+   \item \textbf{Wykrywanie ekstremów dla róźnych skal}:
+      wyszukuje miejsca na obrazie które mogą zawierać elementy kluczowe za pomocą \textbf{DoG}. Funkcja DoG (Difference of Gaussians - Róźnica filtrów Gaussa) jest przybliżeniem \textbf{LoG} (Laplasjan filtru Gaussa) - funkcją filtrują która definiuje macierz konwolucji dla filtracji obrazu. Filtracja obrazu wykrywa krewędzie nie zależnie od ich skali i obrotu, w taki sposób można odrzucić obszary obrazu, dalsza analiza których jest zbędna.
+
+      \begin{figure}[h!]
+         \centering
+         \includegraphics[width=5cm]{DoG_orgin.png}
+         {\Large $  \xrightarrow{DoG}  $} \vspace{2cm}
+         \includegraphics[width=5cm]{DoG_F_white.png}
+      \end{figure}
+
+      [DoG before-after image]
+
+   \item \textbf{Lokalizacja punktów kluczowych}
+
+   \item \textbf{Przydział obrotu}
+
+   \item \textbf{Lokalizacja punktów kluczowych}
+
+   \item \textbf{Lokalizacja punktów kluczowych}
+\end{enumerate}
+
+
+
+\subsection{Parowanie obrazów}
+Aby przyspieszyć wykonanie następnego kroku - \textbf{zestawienie punktów kluczowych}, wprowadzono zestawienie
+\subsection{Zestawienie punktów kluczowych}
+\subsection{Wyznaczanie kształtów sceny}
+\section{Lokalizacja kamery}
+
+
+
+
+SK:
+Fotogrametria
+
+Punkt charakterystyczny
+Element kluczowy
+Cechy charakterystyczne
+SIFT (Scale Invariant Feature Transform - Transformata )
+Deskryptor

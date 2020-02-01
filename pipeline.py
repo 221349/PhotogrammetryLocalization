@@ -1,6 +1,4 @@
-#!/usr/bin/env python
-
-import os, sys, argparse, time
+import os, sys, time
 
 ################################
 ## Config:                    ##
@@ -15,17 +13,6 @@ D_FIELD_OF_VIEW = "56.0"
 SENSOR_DB = AV_DIR + "share/aliceVision/cameraSensors.db"
 ## STEP 1: FeatureExtraction  ##
 D_DESCRIBER_TYPE = "sift"
-"""
-    * sift:         Scale-invariant feature transform.
-    * sift_float:   SIFT stored as float.
-    * sift_upright: SIFT with upright feature.
-    * akaze:        A-KAZE with floating point descriptors.
-    * akaze_liop:   A-KAZE with Local Intensity Order Pattern descriptors.
-    * akaze_mldb:   A-KAZE with Modified-Local Difference Binary descriptors.
-    * cctag3:       Concentric circles markers with 3 crowns.
-    * cctag4:       Concentric circles markers with 4 crowns.
-    * akaze_ocv:    OpenCV implementation of A-KAZE describer.
-"""
 D_DESCRIBER_PRESET = "normal" # low, medium, normal, high, ultra
 ## STEP 2: ImageMatching      ##
 VOCABULARY_TREE = AV_DIR + "share/aliceVision/vlfeat_K80L3.SIFT.tree"
@@ -38,26 +25,22 @@ os.environ['LD_LIBRARY_PATH'] = AV_DIR + "lib/"
 
 av = AV_DIR + "bin/aliceVision_"
 
-
-arg_parser = argparse.ArgumentParser()
-arg_parser.add_argument('--input', '-i', default="")
-arg_parser.add_argument('--describer_preset', '-p', default=D_DESCRIBER_PRESET)
-arg_parser.add_argument('--describer_type', '-t', default=D_DESCRIBER_TYPE)
-arg_parser.add_argument('--max_descriptors', '-d', default=D_MAX_DESCRIPTORS)
-arg_parser.add_argument('--n_matches', '-n', default=D_N_MATCHES)
-arg_parser.add_argument('--skip_ImageMatching', '-s', action='store_true')
-args = arg_parser.parse_args()
-
+silent = False
 ################################
 ## Run:                       ##
 def run(name, cmd, v_level, log_dir):
     cmd += " -v " + v_level
-    cmd += " &> " + log_dir + name
-    print("STEP " + name)
+    cmd += " > " + log_dir + name + " 2>&1"
+    if not silent:
+        print("STEP " + name)
+
+    start_time = time.time()
+
     out = os.system(cmd)
-    if out:
+    mTime = time.time() - start_time
+    if out and not silent:
         print("ERROR: from " + name)
-    return out
+    return out, mTime
 
 ################################
 ## STEP 0: CameraInit         ##
@@ -139,6 +122,7 @@ def structureFromMotion(
     cmd = av + "incrementalSfM -i " + cameraInit_file + " -o " + sfm_file
     cmd += " --featuresFolders " + featureExtraction_dir
     cmd += " --matchesFolders " + featureMatching_dir
+
     return run("4_StructureFromMotion", cmd, v_level, log_dir)
 
 
@@ -147,14 +131,16 @@ def structureFromMotion(
 
 def pipeline(
  input,
+ working_dir = 0,
  preset = D_DESCRIBER_PRESET,
  max_descriptors = D_MAX_DESCRIPTORS,
  n_matches = D_N_MATCHES,
- skip_ImageMatching = True,
+ skip_ImageMatching = False,
  describer_type = D_DESCRIBER_TYPE,
  fieldOfView = D_FIELD_OF_VIEW
 ):
-    working_dir = "/tmp/AV_tmp/" + input
+    if not working_dir:
+        working_dir = "/tmp/AV_tmp/" + input
     if not os.path.isdir(working_dir):
         os.makedirs(working_dir, exist_ok=True)
     SfMData = working_dir + SFMDATA_FILENAME
@@ -164,33 +150,44 @@ def pipeline(
 
     input = "/home/lev/stud/PD/PhotogrammetryLocalization/data/" + input
 
+    result = [True for i in range(5)]
+    time_m = [0 for i in range(5)]
+
+    ##
     cameraInit_file = SfMData + "CameraInit.sfm"
-    cameraInit(data_dir = input, cameraInit_file = cameraInit_file, log_dir = log_dir)
-    time.sleep(1)
+    res, time_m[0] = cameraInit(data_dir = input, cameraInit_file = cameraInit_file, log_dir = log_dir)
+    if res:
+        result[0] = False
+#    time.sleep(1)
 
+    ##
     featureExtraction_dir = SfMData + "FeatureExtraction"
-    featureExtraction(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, describerPreset = preset, describerType = describer_type, log_dir = log_dir)
-    time.sleep(1)
+    res, time_m[1] = featureExtraction(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, describerPreset = preset, describerType = describer_type, log_dir = log_dir)
+    if res:
+        result[1] = False
+#    time.sleep(1)
 
+    ##
     if skip_ImageMatching:
         imageMatching_file = False
     else:
         imageMatching_file = SfMData + "ImageMatching.txt"
-        imageMatching(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, imageMatching_file = imageMatching_file, maxDescriptors = max_descriptors, matchNnumber = n_matches, log_dir = log_dir)
-        time.sleep(1)
+        res, time_m[2] = imageMatching(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, imageMatching_file = imageMatching_file, maxDescriptors = max_descriptors, matchNnumber = n_matches, log_dir = log_dir)
+        if res:
+            result[2] = False
+#        time.sleep(1)
 
+    ##
     featureMatching_dir = SfMData + "FeatureMatching"
-    featureMatching(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, imageMatching_file = imageMatching_file, featureMatching_dir = featureMatching_dir, log_dir = log_dir)
-    time.sleep(5)
+    res, time_m[3] = featureMatching(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, imageMatching_file = imageMatching_file, featureMatching_dir = featureMatching_dir, log_dir = log_dir)
+    if res:
+        result[3] = False
+    time.sleep(2)
 
+    ##
     sfm_file = SfMData + "StructureFromMotion.sfm"
-    structureFromMotion(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, featureMatching_dir = featureMatching_dir, sfm_file = sfm_file, log_dir = log_dir)
+    res, time_m[4] = structureFromMotion(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, featureMatching_dir = featureMatching_dir, sfm_file = sfm_file, log_dir = log_dir)
+    if res:
+        result[4] = False
 
-pipeline(
- args.input,
- args.describer_preset,
- args.max_descriptors,
- args.n_matches,
- args.skip_ImageMatching,
- args.describer_type
-)
+    return [result, time_m]

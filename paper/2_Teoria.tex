@@ -1,9 +1,8 @@
 \graphicspath{ {./img/2_Theory/} }
 
 
-\chapter{Wprowadzenie teoretyczne}
+\chapter{Fotogrametria. Wprowadzenie teoretyczne}
 W tym rozdziale proces jest opisany na przykładzie działania AliceVision.
-\section{Fotogrametria}
 Fotogrametria - dziedzina nauki, sztuki i technologia mająca na celu wyznaczanie informacji i odtworzanie kształtów jednego lub więcej obiektu fizycznego na podstawie zdjęć obiektu.
 Fotogrametria można podizelić na dwa rodzaje: płaską i przestrzenną. Fotogrametria płaska wymaga co najmniej jednego zdjęcia i jej wynikiem jest charakterystyka obiektu w płaszczyźnie. Fotogrametria przestrzenna wymaga dwóch lub więcej zdjęć, jest używana do odtwarzania obiektów w przestrzeni trójwymiarowej.
 
@@ -17,43 +16,123 @@ Pozwala wyznaczyć takie charakterystyki jak:
    \item color i teksturę
 \end{itemize}
 
-Dodatkowo technologia fotogrametrii pozwala na wyznaczenie położenia kamery(obserwatora) w chwili robienia zdjęcia fotogrametrycznego.
+Dodatkowo technologia fotogrametrii pozwala na wyznaczenie położenia kamery (obserwatora) w chwili robienia zdjęcia fotogrametrycznego.
 Położenie kamery w przestrzeni trójwymiarowej jest wyznaczane na podstawie bazy sceny i wybranego zdjęcia zawierającego całość lub część sceny.
 
-\subsection{Wyznaczanie punktów kluczowych}
+W tej części będzie rostatrzony proces fotogrametryczny dla wyznaczania cech sceny i budowy sceny w przestrzeni 3D wraz z lokalizacją kamer na podstawie frameworku AliceVision. Proces ten można rozbić na poszczególne etapy, każdy etap jest opisany w rozdziałach 2.1-2.5.
+
+\section{Wyznaczanie punktów kluczowych. Transformata SIFT}
 Obraz z zestawu zdjęć fotogrametrycznych posiada cechy kluczowe które mogą być na tyle charakterystyczne, że można z wysokim prawdopodobieństwem je znaleźć w bazie cech innego zdjęcia zawierającego ten sam obiekt.
 
-Jednym ze sposobów wyznaczania i zapisu takich elementów jest stosowanie opatentowanych algorytmów i deskryptorów \textbf{SIFT} (Scale Invariant Feature Transform). Ta transformata jest powszechnie stosowana w przetwarzaniu i rozpoznawaniu obrazów do wykrywania punktów charakterystycznych.
+Jednym ze sposobów wyznaczania i zapisu takich elementów jest stosowanie opatentowanych algorytmów i deskryptorów \textbf{SIFT} (Scale Invariant Feature Transform - skalo-niezmienna transformata cech, Skaloniezmiennicze przekształcenie cech). Ta transformata jest powszechnie stosowana w przetwarzaniu i rozpoznawaniu obrazów do wykrywania punktów charakterystycznych.
 
-Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowych obraz jest poddawany szeregu wstępnych zabiegów optymalizacji i filtracji. Taki proces wyznaczania cech można przedstawić w taki szereg kroków:
+Zastosowanie takiej transformaty na przeciętnym zdjęciu o rozmiarze 500x500 pikseli może wykryć około 2000 cech charakterystycznych, oczywiście liczba wykrytyvh elementów zależy od jak od zawartości i jakości zdjęcia, tak i od parametrów stosowanej transformaty.
+
+Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowych obraz jest poddawany szeregu zabiegów optymalizacji i filtracji. Proces wyznaczania cech można przedstawić w taki szereg kroków:
 \begin{enumerate}
-   \item \textbf{Wykrywanie ekstremów dla róźnych skal}:
-      wyszukuje miejsca na obrazie które mogą zawierać elementy kluczowe za pomocą \textbf{DoG}. Funkcja DoG (Difference of Gaussians - Róźnica filtrów Gaussa) jest przybliżeniem \textbf{LoG} (Laplasjan filtru Gaussa) - funkcją filtrują która definiuje macierz konwolucji dla filtracji obrazu. Filtracja obrazu wykrywa krewędzie nie zależnie od ich skali i obrotu, w taki sposób można odrzucić obszary obrazu, dalsza analiza których jest zbędna.
-
-      \begin{figure}[h!]
-         \centering
-         \includegraphics[width=5cm]{DoG_orgin.png}
-         {\Large $  \xrightarrow{DoG}  $} \vspace{2cm}
-         \includegraphics[width=5cm]{DoG_F_white.png}
-      \end{figure}
-
-      [DoG before-after image]
-
-   \item \textbf{Lokalizacja punktów kluczowych}
-
-   \item \textbf{Przydział obrotu}
-
-   \item \textbf{Lokalizacja punktów kluczowych}
-
-   \item \textbf{Lokalizacja punktów kluczowych}
+   \item Obliczenie przestrzeni skal Gaussa
+   \item Obliczenie DoG (Róźnicy filtrów Gaussa)
+   \item Wyznaczenie punktów pretendujących
+   \item Lokalizacja punktów kluczowych z subpikselową dokładnością
+   \item Filtracja punktów niestabilnych pod względem szumu
+   \item Filtracja punktów niestabilnych co leżą na krawędziach
+   \item Przydział obrotu(orientacji) dla punktu kluczowego
+   \item Utworzenie deskryptora punktu kluczowego
 \end{enumerate}
 
+\subsection{Filtr Gaussa}
+
+   Także nazywany rozmyciem Gaussa --- filtr splotowy, który można zapisać w sposób konwolucji ciagłej:
+   \begin{equation} \label{eq:gauss_c}
+      \mathbf{F}_{g}(\mathbf{u}(\mathbf{x}))
+      = (\mathbf{G}_{\sigma} * \mathbf{u}) (\mathbf{x})
+      = \int \mathbf{G}_{\sigma}(\mathbf{x}') \mathbf{u}(\mathbf{x}-\mathbf{x}') d\mathbf{x}'
+   \end{equation}
+   gdzie $ \mathbf{u}(\mathbf{x}) , \smallskip \mathbf{x} = (x, y) \in \mathbb{R}^2 $ obraz wejściowy,
+   a $ \mathbf{G}_{\sigma}(\mathbf{x}) = \frac{1}{2 \Pi \sigma^2} e^{-\frac{ | \mathbf{x} |^2}{2\sigma^2} },
+   \smallskip \sigma \in \mathbb{R}^+ $ funkcja jądra konwolucji.
+
+   W danym przypadku mamy doczynienie z obrazami rastrowymi, więc stosowany jest splot dyskretny. Konwolucja dyskretna takiego filtru z parametrem $\sigma$ dla obrazu $\mathbf{u}$ o rozmiarze $ M \times N $ ma postać:
+   \begin{equation} \label{eq:gauss_d}
+      \begin{split}
+         \mathbf{F}_{g}(\mathbf{u}(k,l) )
+         = (\mathbf{G}_{\sigma} * \mathbf{u}) (k,l) =
+         \sum_{k' = -\lceil 4\sigma \rceil}^{\lceil 4\sigma \rceil} \mathbf{g}_{\sigma} (k')
+         \sum_{l' = -\lceil 4\sigma \rceil}^{\lceil 4\sigma \rceil} \mathbf{g}_{\sigma} (l') \mathbf{\bar{u}} (k - k', l - l'),
+         \\
+         \mathbf{g}_{\sigma}(k) = Ke^{- \frac{k^2}{2 \sigma^2}}, \:
+         -\lceil 4\sigma \rceil \leq k \leq \lceil 4\sigma \rceil, \:
+         k \in \mathbb{Z}
+      \end{split}
+   \end{equation}
+   gdzie $\lceil a \rceil$ --- funkcja zaokrąglająca w górę, $K$ jest takie, że $\sum \mathbf{g}_{\sigma} (k) = 1 $
+   \begin{equation}
+      \begin{split}
+         \mathbf{\bar{u}}(k, l) =  \mathbf{\bar{u}} (s_M(k), s_N(l)),
+         \\
+         s_M(k) = \mathrm{min}(\mathrm{mod}(k, 2M), 2M - 1 - \mathrm{mod}(k, 2M)),
+      \end{split}
+   \end{equation}
+   gdzie $ \mathrm{mod(a,b)} $ --- reszta z dzielenia $a$ przez $b$.
+
+   \begin{figure}[h]
+      \centering
+      \includegraphics[width=5cm]{origin.png}
+      \Large{$ \xrightarrow{\mathbf{F}_{g}} $}
+      \includegraphics[width=5cm]{Gauss_blur.png}
+      \caption{Obraz przed i po rozmyciu Gaussa}
+      \label {fig:gauss_blur}
+   \end{figure}
+
+   Utworzenie przestrzeni skal w algorytmie \textbf{SIFT} polega na stworzemiu rodziny skal $v$ poprzez kilkukreotne skalowenie obrazu wejściowego, a następnie kilkukrotnej filtracji każdej skali $\delta$ z róźnym parametrem rozmycia $\sigma$,
+   Standardowo krok skalowania wynosi $ S = 2 \: (M_{n+1} = M_{n} / 2)$, liczba skal wynosi $ n_{\delta} = 3$, a liczba poziomów rozmycia $ n_{\sigma} = 4$
+
+\subsection{Róźnica filtrów Gaussa}:
+   Funkcja \textbf{DoG} (Difference of Gaussians - Róźnica filtrów Gaussa) wyznacza obszary na obrazie które mogą zawierać elementy kluczowe (krok 2 transformacji \textbf{SIFT}). Funkcja \textbf{DoG} jest przybliżeniem \textbf{LoG} (Laplasjan filtru Gaussa) - funkcją filtrują która definiuje macierz konwolucji dla filtracji obrazu. Filtracja obrazu (Rysunek \ref{fig:DoG})  wykrywa krewędzie nie zależnie od ich skali i obrotu, w taki sposób można odrzucić obszary obrazu, dalsza analiza których jest zbędna.
+   \begin{equation} \label{eq:DoG}
+      \mathbf{D} = L(x, y, k_i \sigma) - L(x, y, k_i \sigma)
+   \end{equation}
+   gdzie
+   \begin{equation} \label{eq:DoG}
+      L(x, y, k_i \sigma) = G(x, y, k\sigma) * I(x, y)
+   \end{equation}
+
+   \begin{figure}[h]
+      \centering
+      \subfloat[Oryginał]{\includegraphics[width=5cm]{origin.png}}
+      \smallskip{ }
+      \subfloat[$\sigma_1 = 1, \sigma_2 = 4$]{\includegraphics[width=5cm]{DoG_1to4_white.png}}
+      \smallskip{ }
+      \subfloat[$\sigma_1 = 2, \sigma_2 = 16$]{\includegraphics[width=5cm]{DoG_2to16_white.png}}
+   \caption{Obraz przed i po filtracji DoG}
+   \label {fig:DoG}
+   \end{figure}
 
 
-\subsection{Parowanie obrazów}
-Aby przyspieszyć wykonanie następnego kroku - \textbf{zestawienie punktów kluczowych}, wprowadzono zestawienie
-\subsection{Zestawienie punktów kluczowych}
-\subsection{Wyznaczanie kształtów sceny}
+
+\subsection{Lokalizacja punktów kluczowych}
+      Próba zastosowania modelu do wykrycia cechy w możliwych miejscach występowania cechy. Pozwala wykryć lokalizację i skalę elementu charakterystycznego. Wybór punktów kluczowych jest robiony na podstawie ich stabilności.
+
+      \begin{figure}[h]
+         \centering
+         \includegraphics[width=5cm]{SIFT_cube_points.png}
+         \label {fig:SIFT_points}
+      \end{figure}
+
+\subsection{Przydział obrotu}
+      Dla każdego punktu kluczowego jest przydzielana jedna lub więcej orientacji.
+      Przekształcenie elementu charakterystycznego w stosunku do lokalizacji, skali i orientacji pozwala zapewnić niezmienność transformacji cechy dla następnych operacji.
+\subsection{Deskryptor punktu kluczowego}
+      Transformata gradientów lokalnych
+
+Cechy zdjęcia wykryte transformacją  \textbf{SIFT} są bardzo charakterystyczne, co pozwala z wysokim prawdopodobieństwem wykryć właściwy punkt w bazie danych innego zdjęcia.
+
+\section{Parowanie obrazów}
+Ten krok ma 2 cele:
+Aby zredukować ilość błędnych par punktów charakterystycznych, kiedy 2 obrazy nie posiadają wspólnych części sceny.
+Aby przyspieszyć wykonanie następnego kroku - \textbf{zestawienie punktów kluczowych}.
+\section{Zestawienie punktów kluczowych}
+\section{Wyznaczanie kształtów sceny}
 \section{Lokalizacja kamery}
 
 

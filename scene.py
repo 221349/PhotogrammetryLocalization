@@ -76,23 +76,26 @@ def add_feature(
  f_pos = [0, 0, 0],
  linestyle = '--',
  linewidth = 1,
- color = [0, 0, 0]
+ color = [0, 0, 0],
+ hide_labels = False
 ):
     for cam in cam_pos:
         txt_pos = f_pos
         ax.plot([cam[0], f_pos[0]],[cam[1], f_pos[1]],[cam[2], f_pos[2]], linestyle = linestyle, color=color, linewidth = linewidth)
         ax.scatter([f_pos[0]],[f_pos[1]],[f_pos[2]], marker='*', c=[color], s=point_size)
-        ax.text(*txt_pos, " " + name, color='#cc00cc', fontsize=14)
+        if not hide_labels:
+            ax.text(*txt_pos, " " + name, color='#cc00cc', fontsize=14)
 
 def draw():
     plt.show()
     a = 0
 
 def image(
- name = "",
+ name = "?",
  path = "",
  points = [[]],
- p_names = []
+ p_names = [],
+ hide_labels = False
 ):
     img =  plt.imread(fname=path)
     figure = plt.figure()
@@ -103,6 +106,7 @@ def image(
         out.plot(points[i][0], points[i][1], marker='+', markersize=15, c='#ff00ff', markeredgewidth=1)
         out.plot(points[i][0], points[i][1], marker='o', markersize=15, c='#000000', markeredgewidth=2, fillstyle='none')
         out.plot(points[i][0], points[i][1], marker='o', markersize=15, c='#ff00ff', fillstyle='none')
-        txt = out.text(*points[i], "  " + p_names[i], color='#ff00ff', fontsize=14, weight='light')
-        txt.set_path_effects([PathEffects.withStroke(linewidth=1, foreground='#000000')])
+        if not hide_labels:
+            txt = out.text(*points[i], "  " + p_names[i], color='#ff00ff', fontsize=14, weight='light')
+            txt.set_path_effects([PathEffects.withStroke(linewidth=1, foreground='#000000')])
     out.imshow(img)

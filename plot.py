@@ -30,6 +30,7 @@ arg_parser.add_argument('--cam_elong', default=CAM_ELONG, type=float)
 arg_parser.add_argument('--marker_size', default=MARKES_SIZE, type=float)
 arg_parser.add_argument('--select_features', type=int)
 arg_parser.add_argument('--min_views_per_feature', default=MIN_VIEWS_PER_FEATURE, type=int)
+arg_parser.add_argument('--hide_labels', action='store_true')
 
 args = arg_parser.parse_args()
 
@@ -43,6 +44,7 @@ if args.select_pose:
     select_pose = True
     positions = args.select_pose
 
+hide_labels = args.hide_labels
 
 ################################
 ## SETUP:                     ##
@@ -151,7 +153,7 @@ class Features():
              f_pos = item.pos,
              color = item.color,
              name = item.name,
-             point_size = marker_size * 10)
+             point_size = marker_size * 10, hide_labels = hide_labels)
 
 def plot_images(features):
     for view in views.cameras:
@@ -164,7 +166,7 @@ def plot_images(features):
                      feature.views_pos[feature.views.index(view.id)]
                     )
                     p_names.append(feature.name)
-        scene.image(name = view.name, path = view.path, points = points, p_names = p_names)
+        scene.image(name = view.name, path = view.path, points = points, p_names = p_names, hide_labels = hide_labels)
 
 
 ################################

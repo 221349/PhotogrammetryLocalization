@@ -1,16 +1,14 @@
-%Przykładowy plik ułatwiający złożenie projektu dyplomowego inżynierskiego.
-%UWAGA: Generowany napis na stronie tytułowej o treści PROJEKT DYPLOMOWY INŻYNIERSKI został zaproponowany przeze mnie i nie jest, póki co, potwierdzony przez władze wydziału. Przed ostatecznym oddaniem tak złożonej pracy należy upewnić się jaka powinna być treść tego napisu. W momencie gdy uzyskam informację na temat treści tego napisu, dokonam niezbędnych zmian w źródłach.
-
-\documentclass[eng, printmode, openany]{mgr}
-%opcje klasy dokumentu mgr.cls zostały opisane w dołączonej instrukcji
-
+\documentclass[eng, draft, openany]{mgr} %Draft
+%\documentclass[eng, printmode, final]{mgr} %Print
 
 \usepackage{polski}
 \usepackage[utf8x]{inputenc}
 
 %pakiety do grafiki
 \usepackage{graphicx}
-\usepackage{subfigure}
+%\usepackage{subfigure}
+\usepackage[caption = false]{subfig}
+%\usepackage{subcaption}
 \usepackage{psfrag}
 
 %pakiety dodające dużo dodatkowych poleceń matematycznych
@@ -54,6 +52,8 @@
 \tableofcontents %spis treści
 
 \relax
+
+
 
 \include{1_Wstep}
 \include{2_Teoria}

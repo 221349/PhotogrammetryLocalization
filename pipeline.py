@@ -15,6 +15,17 @@ D_FIELD_OF_VIEW = "56.0"
 SENSOR_DB = AV_DIR + "share/aliceVision/cameraSensors.db"
 ## STEP 1: FeatureExtraction  ##
 D_DESCRIBER_TYPE = "sift"
+"""
+    * sift:         Scale-invariant feature transform.
+    * sift_float:   SIFT stored as float.
+    * sift_upright: SIFT with upright feature.
+    * akaze:        A-KAZE with floating point descriptors.
+    * akaze_liop:   A-KAZE with Local Intensity Order Pattern descriptors.
+    * akaze_mldb:   A-KAZE with Modified-Local Difference Binary descriptors.
+    * cctag3:       Concentric circles markers with 3 crowns.
+    * cctag4:       Concentric circles markers with 4 crowns.
+    * akaze_ocv:    OpenCV implementation of A-KAZE describer.
+"""
 D_DESCRIBER_PRESET = "normal" # low, medium, normal, high, ultra
 ## STEP 2: ImageMatching      ##
 VOCABULARY_TREE = AV_DIR + "share/aliceVision/vlfeat_K80L3.SIFT.tree"
@@ -31,6 +42,7 @@ av = AV_DIR + "bin/aliceVision_"
 arg_parser = argparse.ArgumentParser()
 arg_parser.add_argument('--input', '-i', default="")
 arg_parser.add_argument('--describer_preset', '-p', default=D_DESCRIBER_PRESET)
+arg_parser.add_argument('--describer_type', '-t', default=D_DESCRIBER_TYPE)
 arg_parser.add_argument('--max_descriptors', '-d', default=D_MAX_DESCRIPTORS)
 arg_parser.add_argument('--n_matches', '-n', default=D_N_MATCHES)
 arg_parser.add_argument('--skip_ImageMatching', '-s', action='store_true')
@@ -133,7 +145,15 @@ def structureFromMotion(
 ################################
 ## PIPELINE                   ##
 
-def pipeline(input, preset, max_descriptors, n_matches, skip_ImageMatching = True):
+def pipeline(
+ input,
+ preset = D_DESCRIBER_PRESET,
+ max_descriptors = D_MAX_DESCRIPTORS,
+ n_matches = D_N_MATCHES,
+ skip_ImageMatching = True,
+ describer_type = D_DESCRIBER_TYPE,
+ fieldOfView = D_FIELD_OF_VIEW
+):
     working_dir = "/tmp/AV_tmp/" + input
     if not os.path.isdir(working_dir):
         os.makedirs(working_dir, exist_ok=True)
@@ -149,7 +169,7 @@ def pipeline(input, preset, max_descriptors, n_matches, skip_ImageMatching = Tru
     time.sleep(1)
 
     featureExtraction_dir = SfMData + "FeatureExtraction"
-    featureExtraction(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, describerPreset = preset, log_dir = log_dir)
+    featureExtraction(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, describerPreset = preset, describerType = describer_type, log_dir = log_dir)
     time.sleep(1)
 
     if skip_ImageMatching:
@@ -166,4 +186,11 @@ def pipeline(input, preset, max_descriptors, n_matches, skip_ImageMatching = Tru
     sfm_file = SfMData + "StructureFromMotion.sfm"
     structureFromMotion(cameraInit_file = cameraInit_file, featureExtraction_dir = featureExtraction_dir, featureMatching_dir = featureMatching_dir, sfm_file = sfm_file, log_dir = log_dir)
 
-pipeline(args.input, args.describer_preset, args.max_descriptors, args.n_matches, args.skip_ImageMatching)
+pipeline(
+ args.input,
+ args.describer_preset,
+ args.max_descriptors,
+ args.n_matches,
+ args.skip_ImageMatching,
+ args.describer_type
+)

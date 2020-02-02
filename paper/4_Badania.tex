@@ -2,10 +2,10 @@
 
 \chapter{Przebieg badań}
 
-W badaniu zastosowano zestawy obrazów, każdy zestaw przedstawia następujące sceny:
+W badaniu przeprowadzona analiza wyników przetwarzania zestawów zdjęć, każdy zestaw przedstawia następujące sceny:
 \begin{itemize}
    \item Kostka Rubika na podstawce, "c0" (Rysunek \ref{fig:scene_c0}).
-   \item Kostka Rubika z oświetleniem równomiernym, "c1" (Rysunek \ref{fig:scene_c1}).
+   \item Kostka Rubika z oświetleniem zmiennym, "c1" (Rysunek \ref{fig:scene_c1}).
    \item Kostka Rubika z oświetleniem punktowym, "c2" (Rysunek \ref{fig:scene_c2}).
    \item Znaki specjalne, "mark" (Rysunek \ref{fig:scene_mark}).
    \item Budynek A1 PWr (wybrzeże Wyspiańskiego 27), "A1" (Rysunek \ref{fig:scene_A1}).
@@ -14,120 +14,193 @@ W badaniu zastosowano zestawy obrazów, każdy zestaw przedstawia następujące 
 \begin{figure}[h]
    \centering
    \includegraphics[width=6cm]{img/c0.jpg}
-   \caption{Kostka Rubika na podstawce, scena "c0"}
+   \caption{Kostka Rubika na podstawce, scena "c0", 4 zdjęcia}
    \label {fig:scene_c0}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=6cm]{img/c1.jpg}
-   \caption{Kostka Rubika z oświetleniem równomiernym, scena "c1"}
+   \caption{Kostka Rubika z oświetleniem zmiennym, scena "c1", 20 zdjęć}
    \label {fig:scene_c1}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=6cm]{img/c2.jpg}
-   \caption{Kostka Rubika z oświetleniem punktowym, scena "c2"}
+   \caption{Kostka Rubika z oświetleniem punktowym, scena "c2", 10 zdjęć}
    \label {fig:scene_c2}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=6cm]{img/mark.jpg}
-   \caption{Znaki specjalne, scena "mark"}
+   \caption{Znaki specjalne, scena "mark", 13 zdjęć}
    \label {fig:scene_mark}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=6cm]{img/A1.jpg}
-   \caption{Budynek A1 PWr, scena "A1"}
+   \caption{Budynek A1 PWr, scena "A1", 19 zdjęć}
    \label {fig:scene_A1}
 \end{figure}
 
+Wyniki są wygenerowane w następujących postaciach:
+\begin{itemize}
+   \item Rekonstrukcja sceny w przestrzenie trójwymiarowej, zawiera zbiór punktów kluczowych i wykrytych pozycji kamery wraz. Nazwa pozycji odpowiada nazwie pliku zdjęcia. Scena generowana jest za pomocą skryptu "plot.py".
+   \item Oznaczone wspólne punkty kluczowe dla wybranych zdjęć. Na rekonstrukcji sceny punkty są oznaczone gwiazdką i promieniem cągnącym się promieniem od miejsca kamery wraz z przydzieloną literą. Na zdjęciu punkty są oznaczone fioletowym fioletowym kółkiem i odpowiednią literą. Wykres generowany jest za pomocą skryptu "plot.py".
+   \item Wykres zależności czasu wykonywania, procentu wykrytych ujęć i powodzenia na etapie rekonstrukcji sceny od ustawień parametru transformacji SIFT.
+   \begin{itemize}
+      \item  Na czerwono: czas w sekundach
+      \item  Na niebiesko: wykryte ujęcia w procentach
+      \item  Na zielono: procent udanych prób rekonstrukcji sceny, może przyjmować wartość 0 (próba nieudana) lub 100 (rekonstrukcja powiodła się), wartość pomiędzy 0 a 100 oznaczała by błąd pod czas wykonywania pomiarów.
+   \end{itemize}
+    Wykres generowany jest za pomocą skryptu "batch.py".
+\end{itemize}
 
-\section{Wpływ parametrów rozpoznawania cech}
-
-Pierwszy krok procesu fotogrametrycznego - rozpoznawanie cech w można dokonać z róźnym parametrem ustawień transformaty SIFT. Taki parametr, nazywany "preset" może przyjąć jedną z wartości ["low", "medium", "normal", "high", "ultra"]. Dla przeciętnej sceny stosowanie ustawień "low" i "medium" zwykle było niewystarczające aby wykryć jakiekolwiek pozycje kamery. Ustawienie "normal" okazało się wystarczającym aby wykryć 80\% pozycji. Ustawienia "high" i "ultra" pozwalają uzyskać najlepszy wynik, jednak stosowanie takich ustawień skutkuje znacznym wydłużeniem czasu obliczenia.
-
-Dogłębne wyszukiwanie cech może wykryć więcej punktów kluczowych w scenach z dużą entropią, np. dla sceny "A1", "c2", odtworzone sceny 3D (Rysunek \ref{fig:preset_c2_normal} - \ref{fig:preset_c2_ultra}, \ref{fig:preset_A1_medium} -  \ref{fig:preset_A1_ultra}) których posiadają charakterystyczny wzrost wykrytych cech wraz z wzrostem parametrem "preset".
+\section{Odtwarzanie sceny z róźną zawartością. Wykrycie i dopasowanie cech}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=5cm]{feature_mark/03.png}
+   \includegraphics[width=5cm]{feature_mark/07.png}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 03 i 07, scena "A1"}
+   \label {fig:feature_mark_03_07}
+\end{figure}
 
 \begin{figure}[h]
    \centering
+   \includegraphics[width=10cm]{feature_mark/scene.png}
+   \caption{Wybrane punkty charakterystyczne, scena "mark"}
+   \label {fig:feature_mark_plot}
+\end{figure}
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/plot.png}
+   \caption{Wybrane punkty charakterystyczne, scena "A1"}
+   \label {fig:feature_A1_plot}
+\end{figure}
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/img_0.png}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 0, scena "A1"}
+   \label {fig:feature_A1_img_0}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/img_10.png}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 10, scena "A1"}
+   \label {fig:feature_A1_img_10}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/img_15.png}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 15, scena "A1"}
+   \label {fig:feature_A1_img_15}
+\end{figure}
+
+   Dla dwóch zestawów "A1" i "mark" przeprowadzono odtwarzanie sceny przy takich samych parametrach używając scryptu .
+
+   Scena "mark" przedstawia sobą cztery czarne znaki charakterystyczne na białym tle.
+   Scena była specjalnie sprojektowana, aby sprawdzić zachowanie algorytmu \textbf{SIFT}.
+
+   Punkty charakterystyczne na rysunku \ref{fig:feature_mark_03_07} są umieszczone na wierzchołkach znaku, co zgadza się z algorytmem, gdyż w tych miejscach występują ekstrema funkcji \textbf{DoG}.
+   Brak punktów na krawędziach spowodowany jest jednym z kroków filtracji \textbf{SIFT} punktów na krawędziach.
+
+   Charakterystyczną róźnicą odtwarzanych scen "A1" (Rysunek \ref{fig:feature_A1_plot}) i "mark" (Rysunek \ref{fig:feature_mark_plot}) pod względem wykrytych punktów kluczowych jest znacznie mniejszą ilość odnalezionych cech dla sceny "mark".
+   Taka róźnica jest skutkiem ograniczonej ilości elementów które mogły by spełnić kryteria transformaty \textbf{SIFT}.
+
+   Dodatkowo można odznaczyć bardzo dobry wynik jak zestawienia punktów kluczowych dla sceny "A1" (Rysunek \ref{fig:feature_A1_img_0} - \ref{fig:feature_A1_img_15}) przy tak dużej liczbie elementów kluczowych, jak i dokładność wyznaczonych kształtów sceny (Rysunek \ref{fig:feature_mark_plot}, \ref{fig:preset_mark_normal} - \ref{fig:preset_mark_ultra}) --- zdjęcia sceny "mark" rzeczywiście były robione przemieszczaniem kamery wzdłuż prostej.
+
+\section{Wpływ parametrów rozpoznawania cech na wynik}
+\begin{figure}[h]
+   \centering
    \includegraphics[width=10cm]{preset_c2/normal.png}
-   \caption{Odtworzona scena "c2", parametr: normal}
+   \caption{Odtwarzana scena "c2", parametr: normal}
    \label {fig:preset_c2_normal}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_c2/high.png}
-   \caption{Odtworzona scena "c2", parametr: high}
+   \caption{Odtwarzana scena "c2", parametr: high}
    \label {fig:preset_c2_high}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_c2/ultra.png}
-   \caption{Odtworzona scena "c2", parametr: ultra}
+   \caption{Odtwarzana scena "c2", parametr: ultra}
    \label {fig:preset_c2_ultra}
 \end{figure}
-
-Swoją drogą dla sceny "mark" --- sceny o nieskiej entropii zbiór cech pozostaje praktycznie niezmienny (Rysunek \ref{fig:preset_mark_normal} - \ref{fig:preset_mark_ultra})
 
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_mark/normal.png}
-   \caption{Odtworzona scena "mark", parametr: normal}
+   \caption{Odtwarzana scena "mark", parametr: normal}
    \label {fig:preset_mark_normal}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_mark/high.png}
-   \caption{Odtworzona scena "mark", parametr: high}
+   \caption{Odtwarzana scena "mark", parametr: high}
    \label {fig:preset_mark_high}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_mark/ultra.png}
-   \caption{Odtworzona scena "mark", parametr: ultra}
+   \caption{Odtwarzana scena "mark", parametr: ultra}
    \label {fig:preset_mark_ultra}
 \end{figure}
-
-Skutkiem ubocznym stosowania wyższych ustawień można uważać zwiększenie szumu (błędnie wykrytych i źle zlokalizowanych cech wspólnych) w scenach z duża ilością obiektów (Rysunek \ref{fig:preset_A1_normal}, \ref{fig:preset_A1_high}, \ref{fig:preset_A1_ultra}).
 
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_A1/medium.png}
-   \caption{Odtworzona scena "A1", parametr: medium}
+   \caption{Odtwarzana scena "A1", parametr: medium}
    \label {fig:preset_A1_medium}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_A1/normal.png}
-   \caption{Odtworzona scena "A1", parametr: normal}
+   \caption{Odtwarzana scena "A1", parametr: normal}
    \label {fig:preset_A1_normal}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_A1/high.png}
-   \caption{Odtworzona scena "A1", parametr: high}
+   \caption{Odtwarzana scena "A1", parametr: high}
    \label {fig:preset_A1_high}
 \end{figure}
 \begin{figure}[h]
    \centering
    \includegraphics[width=10cm]{preset_A1/ultra.png}
-   \caption{Odtworzona scena "A1", parametr: ultra}
+   \caption{Odtwarzana scena "A1", parametr: ultra}
    \label {fig:preset_A1_ultra}
 \end{figure}
 
-\section{Wpływ danych na wynik i czas obliczenia}
-Każdy wykres \ref{fig:measure_c0} - \ref{fig:measure_A1} przedstawia zbiór trzech rodzajów danych:
-\begin{itemize}
-   \item Czas wykonania obliczenia - kolor czerwony
-   \item Procent wykrytych pozycji kamery - kolor niebieski
-   \item Procent powodzenia utworzenia sceny - kolor zielony
-\end{itemize}
+Pierwszy krok procesu fotogrametrycznego - rozpoznawanie cech można dokonać z róźnym parametrem ustawień transformaty SIFT.
+Taki parametr, nazywany "preset" może przyjąć jedną z wartości ["low", "medium", "normal", "high", "ultra"].
+Rysunki \ref{fig:measure_c0} - \ref{fig:measure_A1} posiadają wyniki wykonywań procesu fotogrametrycznego dla róźnych ustawień.
+Dla przeciętnej sceny stosowanie ustawień "low" i "medium" zwykle było niewystarczające aby wykryć jakiekolwiek pozycje kamery.
+Ustawienie "normal" okazało się wystarczającym aby wykryć 80\% pozycji. Ustawienia "high" i "ultra" pozwalają uzyskać najlepszy wynik, jednak stosowanie takich ustawień skutkuje znacznym wydłużeniem czasu obliczenia.
 
-%\subsection{Jakość obrazów}
-%\subsection{Ilość obrazów}
-%\subsection{Zawartość obrazów}
+Dogłębne wyszukiwanie cech może wykryć więcej punktów kluczowych w scenach z wysoką entropią, np. dla sceny "A1", "c2", rekonstruowane sceny 3D (Rysunek \ref{fig:preset_c2_normal} - \ref{fig:preset_c2_ultra}, \ref{fig:preset_A1_medium} -  \ref{fig:preset_A1_ultra}) których posiadają charakterystyczny wzrost wykrytych cech wraz z wzrostem parametrem "preset".
 
+
+Swoją drogą dla sceny "mark" --- sceny o niskiej entropii zbiór cech pozostaje praktycznie niezmienny (Rysunek \ref{fig:preset_mark_normal} - \ref{fig:preset_mark_ultra})
+
+
+Skutkiem ubocznym stosowania wyższych ustawień można uważać zwiększenie szumu (błędnie wykrytych i źle zlokalizowanych cech wspólnych) w scenach z duża ilością obiektów (Rysunek \ref{fig:preset_A1_normal}, \ref{fig:preset_A1_high}, \ref{fig:preset_A1_ultra}).
+
+Zestaw "c1" posiada zdięcia przy róźnym oświetleniu --- część zdjęć była zrobiona z dodatkowym źródłem światła.
+Można zauważyć, że rekonstrukcja sceny powiodła się dopiero przy większej liczbie cech, przy większym ustawieniu "high" (w porównaniu do innych zestawów odtwarzanie sceny następowało przy mniejszym nastawieniu), przy czym nawet przy ustawieniu "ultra", część pozycji wciąż nie jest odtwarzona.
+Jednym z warunków dobrego wyniku fotogrametrycznego jest niezmienność sceny w trakcie robienia zdjęć, w tym oświetlenia.
+
+\section{Czas obliczenia}
+
+Rysunki \ref{fig:measure_c0} - \ref{fig:measure_A1} przedstawiają zależności czasu od ustawień transformaty \textbf{SIFT}.
+Zmiana parametrów transformaty wykrywającej cechy ma bezpośredni wpływ na czas potrzebny do wykrycia cech i pośredni dla parowania cech i odtwarzania sceny, gdyż dokładniejsze wyszukiwanie cech zwiększa liczbę znalezionych punktów kluczowych.
+Wyjątek stanowią sceny z ograniczoną liczbą elementów.
+Na przykład dla sceny "mark" liczba wykrytych elementów przy ustawieniach "normal" i "high" nie zmienia się. Wzrost czasu przy ustawieniu "ultra" jest powiązany wzrostem szumu (błędnie wykrytych punktów charakterystycznych).
+
+Bezpośredni wpływ na czas obliczenia również stanowi licza zdjęć.
+Czas potrzebny na przetworzenie zestawu zdjęć wzrasta wraz z liczbą ujęć.
 
 \begin{figure}[h]
    \centering
@@ -158,32 +231,4 @@ Każdy wykres \ref{fig:measure_c0} - \ref{fig:measure_A1} przedstawia zbiór trz
    \includegraphics[width=7cm]{measure/A1.png}
    \caption{Czas wykonania, scena "A1"}
    \label {fig:measure_A1}
-\end{figure}
-
-%\section{Eksperyment z pomiarem odległości}
-
-
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=10cm]{feature_A1/img_0.png}
-   \caption{Wybrane punkty charakterystyczne, zdjęcie 0, scena "A1"}
-   \label {fig:feature_A1_img_0}
-\end{figure}
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=10cm]{feature_A1/img_10.png}
-   \caption{Wybrane punkty charakterystyczne, zdjęcie 10, scena "A1"}
-   \label {fig:feature_A1_img_10}
-\end{figure}
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=10cm]{feature_A1/img_15.png}
-   \caption{Wybrane punkty charakterystyczne, zdjęcie 15, scena "A1"}
-   \label {fig:feature_A1_img_15}
-\end{figure}
-\begin{figure}[h]
-   \centering
-   \includegraphics[width=10cm]{feature_A1/plot.png}
-   \caption{Wybrane punkty charakterystyczne, scena "A1"}
-   \label {fig:feature_A1_plot}
 \end{figure}

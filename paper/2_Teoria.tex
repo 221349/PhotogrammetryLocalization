@@ -3,7 +3,7 @@
 
 \chapter{Fotogrametria. Wprowadzenie teoretyczne}
 
-Fotogrametria - dziedzina nauki, sztuki i technologia mająca na celu wyznaczanie informacji i odtworzanie kształtów jednego lub więcej obiektu fizycznego na podstawie zdjęć obiektu.
+Fotogrametria - dziedzina nauki, rodzaj sztuki i technologia mająca na celu wyznaczanie informacji i odtwarzanie kształtów jednego lub więcej obiektu fizycznego na podstawie zdjęć obiektu.
 Fotogrametria można podizelić na dwa rodzaje: płaską i przestrzenną. Fotogrametria płaska wymaga co najmniej jednego zdjęcia i jej wynikiem jest charakterystyka obiektu w płaszczyźnie. Fotogrametria przestrzenna wymaga dwóch lub więcej zdjęć, jest używana do odtwarzania obiektów w przestrzeni trójwymiarowej.
 
 W tej pracy stosowana jest wyłącznie fotogrametria przestrzenna.
@@ -21,7 +21,7 @@ Położenie kamery w przestrzeni trójwymiarowej jest wyznaczane na podstawie ba
 
 \textbf{Cecha}, punkt kluczowy --- element charakterystyczny obiektu wyróżniający się na tyle, aby można było zidentyfikować ten sam element na zdjęciu z innego ujęcia.
 
-Pojęcie \textbf{sceny fotogrametrycznej}, często wykorzystywane w tym dokumencie, oznacza zbiór statycznych obiektów fizycznych powiązane zdjęcia których używane są do odtwarzania kształtów tego zbioru w przestrzeni trójwymiarowej. Wymaganie dla zbioru zdjęć sceny sceny jest takie, aby zdjęcia zawierały róźne ujęcia scena, przy czym posiadały jeden lub więcej elementów wspólnych i przy takich samych warunkach: oświetlenie, stan sceny, ustawienia kamery i obiektywu, taki sam aparat fotograficzny.
+Pojęcie \textbf{sceny fotogrametrycznej}, często wykorzystywane w tej rozprawie, oznacza zbiór statycznych obiektów fizycznych powiązane zdjęcia których używane są do odtwarzania kształtów tego zbioru w przestrzeni trójwymiarowej. Wymaganie dla zbioru zdjęć sceny sceny jest takie, aby zdjęcia zawierały róźne ujęcia sceny, przy czym posiadały jeden lub więcej elementów wspólnych i przy takich samych warunkach: oświetlenie, stan sceny, ustawienia kamery i obiektywu, taki sam aparat fotograficzny.
 
 Odtwarzanie kształtów oznacza umieszczenie punktów charakterystycznych obiektów w przestrzeni 3D w taki sposób, aby położenie cech względem siebie odpowiadało położeniu w rezeczywistości. Odbywa się na podstawie wykrycia cech charakterystycznych, w tym ich skali, obrotu i położeniu na zdjęciu, a następnie szacowaniu położenia wspólnych cech jednej lub więcej pary zdjęć na podstawie informacji o skali, obrotu i położeniu cechy na zdjęciu.
 
@@ -34,7 +34,7 @@ Obraz z zestawu zdjęć fotogrametrycznych posiada cechy kluczowe które mogą b
 
 Jednym ze sposobów wyznaczania i zapisu takich elementów jest stosowanie opatentowanych algorytmów i deskryptorów \textbf{SIFT} (Scale Invariant Feature Transform - skalo-niezmienna transformata cech, Skaloniezmiennicze przekształcenie cech). Ta transformata jest powszechnie stosowana w przetwarzaniu i rozpoznawaniu obrazów do wykrywania punktów charakterystycznych.
 
-Zastosowanie takiej transformaty na przeciętnym zdjęciu o rozmiarze 500x500 pikseli może wykryć około 2000 cech charakterystycznych, oczywiście liczba wykrytyvh elementów zależy od jak od zawartości i jakości zdjęcia, tak i od parametrów stosowanej transformaty.
+Zastosowanie takiej transformaty na przeciętnym zdjęciu o rozmiarze 500x500 pikseli może wykryć około 2000 cech charakterystycznych, oczywiście liczba wykrytych elementów zależy jak od zawartości i jakości zdjęcia, tak i od parametrów stosowanej transformaty.
 
 Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowych obraz jest poddawany szeregu zabiegów optymalizacji i filtracji. Proces wyznaczania cech można przedstawić w taki szereg kroków:
 \begin{enumerate}
@@ -96,14 +96,18 @@ Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowyc
    Standardowo krok skalowania wynosi $ S = 2 \: (M_{n+1} = M_{n} / 2)$, liczba skal wynosi $ n_{\delta} = 3$, a liczba poziomów rozmycia $ n_{\sigma} = 4$
 
 \subsection{Róźnica filtrów Gaussa}:
-   Funkcja \textbf{DoG} (Difference of Gaussians - Róźnica filtrów Gaussa) wyznacza obszary na obrazie które mogą zawierać elementy kluczowe (krok 2 transformacji \textbf{SIFT}). Funkcja \textbf{DoG} jest przybliżeniem \textbf{LoG} (Laplasjan filtru Gaussa) - funkcją filtrują która definiuje macierz konwolucji dla filtracji obrazu. Filtracja obrazu (Rysunek \ref{fig:DoG})  wykrywa krewędzie nie zależnie od ich skali i obrotu, w taki sposób można odrzucić obszary obrazu, dalsza analiza których jest zbędna.
+   Funkcja \textbf{DoG} (Difference of Gaussians - Róźnica filtrów Gaussa) wyznacza obszary na obrazie które mogą zawierać elementy kluczowe (krok 2 transformacji \textbf{SIFT}). Funkcja \textbf{DoG} jest przybliżeniem \textbf{LoG} (Laplasjan filtru Gaussa) - funkcją filtrują która pozwala wykryć krawędzie. Filtracja obrazu (Rysunek \ref{fig:DoG})  wykrywa krewędzie nie zależnie od ich skali i obrotu, w taki sposób można odrzucić obszary obrazu, dalsza analiza których jest zbędna. Ponieważ w poprzednim kroku sostała stworzona przestrzeń skal z róźnym rozmyciem, transformacja \textbf{DoG} jest obliczana dla każdej kolejnej pary zdjęć w każdym zestawie:
    \begin{equation} \label{eq:DoG}
-      \mathbf{DoG} = L(x, y, k_i \sigma) - L(x, y, k_i \sigma)
+      \mathbf{DoG}(\mathbf{u}) = \mathbf{G}_{\sigma_n}(\mathbf{u}) - \mathbf{G}_{\sigma_{n+1}}(\mathbf{u})
    \end{equation}
-   gdzie
-   \begin{equation} \label{eq:DoG_}
-      L(x, y, k_i \sigma) = G(x, y, k\sigma) * I(x, y)
-   \end{equation}
+
+   \begin{figure}[h]
+      \centering
+      \includegraphics[width=6cm]{SIFT_cube_points.png}
+      \label {fig:G2DoG.png}
+      \caption{Schemat stosowania przekształcenia DoG dla przestrzeni skal}
+      \label {fig:DoGT}
+   \end{figure}
 
    \begin{figure}[h]
       \centering
@@ -155,13 +159,12 @@ Aby przyspieszyć wykonanie następnego kroku --- \textbf{zestawienie punktów k
 
 \section{Zestawienie punktów kluczowych}
 
-\section{Wyznaczanie kształtów sceny}
-Podejście AdaptiveStructurefromMotion
+\section{Wyznaczanie kształtów sceny i kokalizacja kamery}
+Podejście AdaptiveStructurefromMotion (Rysunek \ref{fig:SfM})
 
 \begin{figure}[h]
    \centering
    \includegraphics[width=7cm]{SfM.png}
    \label {fig:SfM}
-   \caption{Wyznaczanie pozycji cechy}
+   \caption{Wyznaczanie pozycji cechy i ujęcia}
 \end{figure}
-\section{Lokalizacja kamery}

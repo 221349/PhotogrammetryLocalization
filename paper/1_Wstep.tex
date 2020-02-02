@@ -4,19 +4,19 @@ Praca jest podzielona na pięć rozdziałów. W tym rozdziale są rozpatrzone pr
 
 \section{Problem lokalizacji}
 
-W wielu sferach życia, jak i w procesach technologicznych występuje potrzeba określenia położenia w przestrzeni --- lokalizacji. To może dtyczyć jak wyznaczania położenia obserwatora tak i lokalizacja obiektu.
+W wielu sferach życia, jak i w procesach technologicznych występuje potrzeba określenia położenia w przestrzeni --- lokalizacji. To może dotyczyć jak wyznaczania położenia obserwatora tak i lokalizacji obiektu.
 
-W tej pracy proponowanym rozwiązaniem problemu lokalizacji jest stosowanie \textbf{pozycjonowania fotogrametrycznego}. Taki rodzaj lokalizacji polega na szacowaniu pozycji obserwatora(obiektywu kamery) względem sceny na podstawie dwóch lub więcej zdjęć. Pozycjonowanie na podstawie zdjęć przewiduje także obecności ruchomej kamery względem sceny.
+W tej pracy proponowanym rozwiązaniem problemu lokalizacji jest stosowanie \textbf{pozycjonowania fotogrametrycznego}. Taki rodzaj lokalizacji polega na szacowaniu pozycji obserwatora(obiektywu kamery) względem sceny na podstawie dwóch lub więcej zdjęć. Pozycjonowanie na podstawie zdjęć przewiduje także obecnośći ruchomej kamery względem sceny.
 
 Zaproponowane rozwiązanie umożliwiło by lokalizację w takich miejscach i przypadkach, gdzie korzystanie z takich narzędzi i rozwiązań jak na przykład \textbf{nawigacja satelitarna}, lokalizacja za pomocą sieci \textbf{stacji BTS}, \textbf{systemy radiolokacji}, \textbf{systemy sonarowe} staje się niemożliwym lub małoskutecznym.
 
-Podejście fotogrametryczne w pozycjonowaniu mogłoby pozwolić na dopełnienie już istniejących systemach lokalizacji w celach zwiększenia dokładności i niezawodności systemu.
+Podejście fotogrametryczne w pozycjonowaniu mogłoby pozwolić na dopełnienie już istniejących systemów lokalizacji w celach zwiększenia dokładności i niezawodności systemu.
 
 Takie podejście też mogłoby pozwolić rozbudowę funkcjonalności lokalizacji systemów już posiadających kamerę. Zaletą takiego rozwiązania może być niski koszt rozbudowy, brak konieczności przerobienia układów systemu, elastyczność konfiguracji.
 
 Przykłądem takich systemów może być dron, robot lub pojazd autonomiczny.
 
-Wadą zastosowania pozycjonowania fotogrametrycznego mogą być małe możliwości zasobów obliczeniowych lub
+Wadą zastosowania pozycjonowania fotogrametrycznego mogą być małe możliwości zasobów obliczeniowych lub wysokie wymagania co do jakości danych.
 
 \textbf{Podejście fotogrametryczne} może być zastosowane jak dla \textbf{lokalizacji absolutnej} (kiedy znany jest układ odniesienia i skale odległośći) tak i  \textbf{lokalizacji względnej}. W rozprawie, jednak, rozpatrzono tylko lokalizację względną. Oznacza to, że rzeczywista pozycja obserwatora, pozycja sceny, skala odległości pozostają nieznane. W rozdziale 5 będzie zaproponowany sposób przejścia od lokacji względnej do lokacji absolutnej.
 
@@ -27,14 +27,14 @@ Wadą zastosowania pozycjonowania fotogrametrycznego mogą być małe możliwoś
 Jednym z zadań pracy była implementacja śródowiska, które umożliwia: wyznaczenie pozycji obserwatora względem sceny na podstawie zdjęć, odtworzenie sceny fotogrametrycznej i przedstawienie wyników przetwarzania w czytelny sposób.
 Dodadtkowo śródowisko fotogrametryczne powinno umożliwić porównywanie wyników przetwarzania.
 
-Kolejnym zadaniem było użyć gotowe śródowisko użyć przedwarzania róźnych zestawów danych przy róźnych parametrach i przeprowadzić analizę uzyskanych wyników.
+Kolejnym zadaniem było użycie gotowego śródowiska przedwarzania róźnych zestawów danych przy róźnych parametrach i przeprowadzić analizę uzyskanych wyników.
 
-Także w tej rozprawie podjęta próba dania odpowiedzi na takie pytania:
+W tej rozprawie także podjęto próbę udzielenia odpowiedzi na takie pytania:
 \begin{itemize}
-   \item Czy można i w jaki sposób wyznaczyć względną pozycję kamery na podstawie zbioru zdjęć,
-   \item Jaki jest algorytm zastosowanego pozycjonowania,
-   \item Jakich rozwiązań można użyć dla estymacji położenia,
-   \item Jakie zasoby są w stanie przeprowadzić obliczenia dla lokalizacji,
-   \item Ile czasu zajmują obliczenia dla otzymania zadowalającego wyniku,
-   \item Jak zależą czas i wynik lokalizacji od danych wejściowyc i parametrów fotogrammetryzacji
+   \item Czy można i jeśli tak, to w jaki sposób wyznaczyć względną pozycję kamery na podstawie zbioru zdjęć?
+   \item Jaki jest algorytm zastosowanego pozycjonowania?
+   \item Jakich rozwiązań można użyć dla estymacji położenia?
+   \item Jakie zasoby są w stanie przeprowadzić obliczenia dla lokalizacji?
+   \item Ile czasu zajmują obliczenia dla otzymania zadowalającego wyniku?
+   \item Jak zależą czas i wynik lokalizacji od danych wejściowyc i parametrów fotogrammetryzacji?
 \end{itemize}

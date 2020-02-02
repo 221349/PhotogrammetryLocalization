@@ -4,12 +4,12 @@ Praktyczna realizacja zaproponowanego rozwiązania składa się z dwóch częśc
 
 \section{Platforma AliceVision}
 
-\textbf{AliceVision} --- framework fotogrametryczny z otwartym kodem źródłomym, udostępniany pod licensją \textbf{MPL2}.
-Platforma została stworzona aby umożliwić odtwarzanie sceny fotogrametrycznej na podstawie zbioru zdjęć lub sekwencji klatek wideo zawierających scene.
+\textbf{AliceVision} --- framework fotogrametryczny z otwartym kodem źródłowym, udostępniany pod licensją \textbf{MPL2}.
+Platforma została stworzona aby umożliwić odtwarzanie sceny fotogrametrycznej na podstawie zbioru zdjęć lub sekwencji klatek wideo zawierających scenę.
 Do wybranych możliwości platformy należą:
 \begin{itemize}
    \item Wyznaczanie punktów charakterystycznych --- cech sceny
-   \item Parowanie zdjęć --- para jest tworzony gdy zdjęcia zawierają ten sam obiekt
+   \item Parowanie zdjęć --- para jest tworzona, gdy zdjęcia zawierają ten sam obiekt
    \item Zestawienie cech zdjęć
    \item Odtwarzanie struktury cech w przestrzeni 3D
    \item Lokalizacja względna i bezwzględna kamery
@@ -20,7 +20,7 @@ Do wybranych możliwości platformy należą:
 \end{itemize}
 
 Aby wykorzystać framework należy pobrać kod źródłowy projektu i zbudować go w swoim śródowisku.
-Istnieje również możliwość pobrania już gotowego projektu w postaci narżedzia \textbf{Meshroom}, program ten jest swojego rodzaju powłoką graficzną dla \textbf{AliceVision} i pozwala w łatwy sposób zapoznać się z możliwościami i sposobem działania platformy.
+Istnieje również możliwość pobrania już gotowego projektu w postaci narżedzia \textbf{Meshroom}. Program ten jest swojego rodzaju powłoką graficzną dla \textbf{AliceVision} i pozwala w łatwy sposób zapoznać się z możliwościami i sposobem działania platformy.
 Pliki frameworku znajdują się w katalogu głównym programu.
 
 Zbudowany framework przedstawia sobą zestaw plików binarnych - pliki wykonywalne i biblioteki dynamiczne.
@@ -41,13 +41,12 @@ Na potrzeby pracy wykorzystano następujące narzędzia:
 Narzędzia są opisane w kolejności odpowiedniej do kolejności uruchomienia, taka kolejność zapewnia przetwarzanie potokowe danych.
 Każde narzędzie jest opisane w poszczególnych rozdziałach pod względem danych wejścia/wyjścia i parametrach w zastosowanych przetwarzaniu danych.
 
-Dla wszystkich wykorzystanych instrumentów można zadać poziom logowania (rejestracji zdarzeń) używając parametru \texttt{--verboseLevel} który przyjmuje wartości \texttt{(fatal, error, warning, info, debug, trace)}
+Dla wszystkich wykorzystanych instrumentów można zadać poziom logowania (rejestracji zdarzeń) używając parametru \texttt{--verboseLevel}, który przyjmuje wartości \texttt{(fatal, error, warning, info, debug, trace)}.
 
 \subsection{CameraInit}
 
 \texttt{aliceVision\_cameraInit} --- narzędzie inicjalizacji procesu odtwarzania.
-Wykrywa i zapisuje listę zbióru zdjęć.
-Definiuję parametry kamery, takie jak \textbf{długość ogniskową} przeszukując bazę kamer na podstawie modelu odczytanego z metadanych zdjęcia. Istnieje możliwość obliczenia parametrów na podstawie kąta widzenia obiektywu.
+Wykrywa i zapisuje listę zbioru zdjęć oraz definiuję parametry kamery, takie jak \textbf{długość ogniskową} przeszukując bazę kamer na podstawie modelu odczytanego z metadanych zdjęcia. Istnieje możliwość obliczenia parametrów na podstawie kąta widzenia obiektywu.
 
 \begin{itemize}
    \item Parametry wejścia:
@@ -94,7 +93,7 @@ Definiuję parametry kamery, takie jak \textbf{długość ogniskową} przeszukuj
 
 \texttt{aliceVision\_imageMatching} --- narzędzie dla utworzenia zbioru par zdjęć.
 Stosowanie tego narzędzia nie jest obowiązkowe.
-Zalecane jest, jednak, dokonanie parowania zdjęć gdyż pozwala to ograniczyć liczbę danych wejściowych \textbf{FeatureMatching} i tym samym przyspieszyć wykonanie procesu fotogrametrii i zredukować prawdopodobieństwo wystąpienia błędnej pary cech.
+Zalecane jest, jednak, dokonanie parowania zdjęć, gdyż pozwala to ograniczyć liczbę danych wejściowych \textbf{FeatureMatching} i tym samym przyspieszyć wykonanie procesu fotogrametrii i zredukować prawdopodobieństwo wystąpienia błędnej pary cech.
 
 \begin{itemize}
    \item Parametry wejścia:
@@ -256,7 +255,7 @@ Struktura użytych węzłów takiego pliku jest następująca (żółty kolor oz
 
 Węzeł [\texttt{”views”}] zawiera zbiór wszystkich zdjęć zestawu, każdemu zdjęciu przydzielony jest numer ujęcia \texttt{id}.
 
-Węzeł [\texttt{”poses”}] zawiera zbiór informacji o wykrytej pozycji. Każda pozycja dpowiada jednemu z zdjęć w zestawie i zawiera macierz rotacji i translacji obserwatora.
+Węzeł [\texttt{”poses”}] zawiera zbiór informacji o wykrytej pozycji. Każda pozycja odpowiada jednemu z zdjęć w zestawie i zawiera macierz rotacji i translacji obserwatora.
 
 Węzeł [\texttt{”structure”}] zawiera zbiór punktów kluczowych. Każdy z tych punktów przechowuje wektor pozycji w przestrzeni, kolor cechy i zbiór pozycji których dotyczy wraz z wektorem położenia na zdjęciu każdej pozycji.
 
@@ -275,7 +274,7 @@ with open(input_json, "r") as read_file:
 
 Do rysowania sceny 3D, a także rysowania wykresów i punktów na zdjęciach wykorzystana jest biblioteka \textbf{\texttt{matplotlib}}
 
-Poniewać dokładny wektor i kolor cechy są już znane wystarczy je podać jako argument dla funkcji rysującej zbiór punktów \texttt{scatter}.
+Poniewać dokładny wektor i kolor cechy są już znane, wystarczy je podać jako argument dla funkcji rysującej zbiór punktów \texttt{scatter}.
 W podobny sposób rysowane są punkty kluczowe na płaszczyźnie zdjęcia(np. Rysunek \ref{fig:feature_A1_img_0}).
 
 Aby narysować ostrosłup przedstawiający kamerę, najpierw definiowane są współrzędne wektorów ostrosłupa w punkcie (0,0,0) a następnie wektory są obracane i przesuwane poprzez mnożenie o macierz rotacji i dodanie macierzy translacji odpowiedniej pozycji.
@@ -302,7 +301,7 @@ Część kodu rysująca zbiór punktów kolorowych przedstawiających cechy i  o
    ax.text(*txt_pos, name, color='#cc0000', fontsize=14)
 \end{python}
 
-Funkcja \texttt{ax2 = ax1.twinx()} pozwala dodać nowy obszczar danych do istniejącego wykresu. W wyniku otrzymując wykres z podwójną osią Y którego dane mogą mieć róźną skalę (np. Rysunek \ref{fig:measure_c0}.
+Funkcja \texttt{ax2 = ax1.twinx()} pozwala dodać nowy obszar danych do istniejącego wykresu. W wyniku otrzymując wykres z podwójną osią Y, którego dane mogą mieć różną skalę (np. Rysunek \ref{fig:measure_c0}.
 
 \subsection{Pomiar czasu}
 

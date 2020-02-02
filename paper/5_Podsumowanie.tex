@@ -3,7 +3,7 @@
 W trakcie wykonywania pracy inżynierskiej udało się zbudować zestaw narzędzi (śródowisko), które umożliwia uruchomienie procesu lokalizacji fotogrametrycznej, wyświetlenie wyników lokalizacji, odtwarzanie sceny w przestrzeni trójwymiarowej. Dodatkowo śródowisko posiada narzędzie dla przeprowadzania testów wydajności dla róźnych zestawów danych i róźnych parametrów przetwarzania.
 
 Przedstawione śródowisko wykorzystuje platformę AliceVision dla implementacji procesu fotogrametrycznego.
-Platforma ta została wybrana dla potrzeb projektu, ponieważ jest dobrze opracowanym i potężnym frameworkiem z ciągle podtrzymywanym i otwartym kodem źródłomym.
+Platforma ta została wybrana dla potrzeb projektu, ponieważ jest dobrze opracowanym i potężnym frameworkiem z ciągle podtrzymywanym i otwartym kodem źródłowym.
 Do wad frameworku można odnieść częściowy brak dokumentacji i dość skomplikowany proces kompilacji frameworku w śródowisku własnym.
 
 Dla praktycznego sprawdzenia zaproponowanej teorii lokalizacji zostały dobrane pięć zestawów zdjęć zawierające róźne sceny.
@@ -11,12 +11,12 @@ Sceny czterech z pięciu zestawów zawierały zestaw obiektów (kostka Rubika, a
 
 
 Można powiedzieć, że proces przetwarzania zdjęć jest dość wymagający pod względem zapotrzebowania zasobów obliczeniowych.
-Obliczenia były przeprowadzane na przeciętnym sprzęcie obliczeniowym dla roku 2020 --- CPU Intel i7-2620m.
+Obliczenia były przeprowadzane na przeciętnym sprzęcie obliczeniowym dla roku 2020 --- procesor Intel i7-2620m.
 
-Dla zestawu o rozmiarze 10 zdjęć potrzebne około 40 sekund na uzyskanie zadowalającego wyniku.
+Dla zestawu o rozmiarze 10 zdjęć potrzebne jest około 40 sekund na uzyskanie zadowalającego wyniku.
 Dla zestawu o rozmiarze 4 zdjęć uzyskanie zadowalającego wyniku zajeło 4 sekundy.
 
-Ponieważ czas obliczenia wzrasta wraz z wzrostem nastawienień parametrów przetwarzania i wraz z wzrostem ilości danych, dla dużych zestawów danych proponowana jest próba stosowania niższych parametrów na początek, a następnie poztępowe zwiększenie ustawień aż do momentu uzyskania zadowalających wyników. Dodatkowo można wprowadzić filtrację wstępną obrazów złej jakości i zbędnej zawartości.
+Ponieważ czas obliczenia wzrasta wraz ze wzrostem nastawienień parametrów przetwarzania i wraz ze wzrostem ilości danych, dla dużych zestawów danych proponowana jest próba stosowania niższych parametrów na początek, a następnie stopniowe zwiększenie ustawień aż do momentu uzyskania zadowalających wyników. Dodatkowo można wprowadzić filtrację wstępną obrazów złej jakości i zbędnej zawartości.
 
 Uzyskanie dobrego wyniku lokalizacji (stosunek wykrytych pozycji do liczby zdjęć) wprost zależy od liczby cech charakterystycznych na zdjęciach.
 Przykładem dobrego wyniku można uważać przetwarzanie zestawu "A1", zdjęcia którego mają wysoki poziom entropii.

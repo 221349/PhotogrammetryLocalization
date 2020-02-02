@@ -2,7 +2,7 @@
 
 \chapter{Przebieg badań}
 
-W badaniu przeprowadzona analiza wyników przetwarzania zestawów zdjęć, każdy zestaw przedstawia następujące sceny:
+W badaniu przeprowadzono analizę wyników przetwarzania zestawów zdjęć, każdy zestaw przedstawia następujące sceny:
 \begin{itemize}
    \item Kostka Rubika na podstawce, "c0" (Rysunek \ref{fig:scene_c0}).
    \item Kostka Rubika z oświetleniem zmiennym, "c1" (Rysunek \ref{fig:scene_c1}).
@@ -44,13 +44,13 @@ W badaniu przeprowadzona analiza wyników przetwarzania zestawów zdjęć, każd
 
 Wyniki są wygenerowane w następujących postaciach:
 \begin{itemize}
-   \item Rekonstrukcja sceny w przestrzenie trójwymiarowej, zawiera zbiór punktów kluczowych i wykrytych pozycji kamery wraz. Nazwa pozycji odpowiada nazwie pliku zdjęcia.
-   \item Oznaczone wspólne punkty kluczowe dla wybranych zdjęć. Na rekonstrukcji sceny punkty są oznaczone gwiazdką i promieniem cągnącym się promieniem od miejsca kamery wraz z przydzieloną literą. Na zdjęciu punkty są oznaczone fioletowym fioletowym kółkiem i odpowiednią literą.
+   \item Rekonstrukcja sceny w przestrzeni trójwymiarowej, zawiera zbiór punktów kluczowych i wykrytych pozycji kamery wraz. Nazwa pozycji odpowiada nazwie pliku zdjęcia.
+   \item Oznaczone wspólne punkty kluczowe dla wybranych zdjęć. Na rekonstrukcji sceny punkty są oznaczone gwiazdką i promieniem ciągnącym się od miejsca kamery wraz z przydzieloną literą. Na zdjęciu punkty są oznaczone fioletowym kółkiem i odpowiednią literą.
    \item Wykres zależności czasu wykonywania, procentu wykrytych ujęć i powodzenia na etapie rekonstrukcji sceny od ustawień parametru transformacji SIFT.
    \begin{itemize}
       \item  Na czerwono: czas w sekundach
       \item  Na niebiesko: wykryte ujęcia w procentach
-      \item  Na zielono: procent udanych prób rekonstrukcji sceny, może przyjmować wartość 0 (próba nieudana) lub 100 (rekonstrukcja powiodła się), wartość pomiędzy 0 a 100 oznaczała by błąd pod czas wykonywania pomiarów.
+      \item  Na zielono: procent udanych prób rekonstrukcji sceny, może przyjmować wartość 0 (próba nieudana) lub 100 (rekonstrukcja powiodła się), wartość pomiędzy 0 a 100 oznaczała błąd pod czas wykonywania pomiarów.
    \end{itemize}
 \end{itemize}
 
@@ -96,16 +96,16 @@ Wyniki są wygenerowane w następujących postaciach:
    \label {fig:feature_A1_img_15}
 \end{figure}
 
-   Dla dwóch zestawów "A1" i "mark" przeprowadzono odtwarzanie sceny przy takich samych parametrach używając scryptu .
+   Dla dwóch zestawów "A1" i "mark" przeprowadzono odtwarzanie sceny przy takich samych parametrach.
 
    Scena "mark" przedstawia sobą cztery czarne znaki charakterystyczne na białym tle.
-   Scena była specjalnie sprojektowana, aby sprawdzić zachowanie algorytmu \textbf{SIFT}.
+   Scena była specjalnie zaprojektowana, aby sprawdzić zachowanie algorytmu \textbf{SIFT}.
 
    Punkty charakterystyczne na rysunku \ref{fig:feature_mark_03_07} są umieszczone na wierzchołkach znaku, co zgadza się z algorytmem, gdyż w tych miejscach występują ekstrema funkcji \textbf{DoG}.
    Brak punktów na krawędziach spowodowany jest jednym z kroków filtracji \textbf{SIFT} punktów na krawędziach.
 
-   Charakterystyczną róźnicą odtwarzanych scen "A1" (Rysunek \ref{fig:feature_A1_plot}) i "mark" (Rysunek \ref{fig:feature_mark_plot}) pod względem wykrytych punktów kluczowych jest znacznie mniejszą ilość odnalezionych cech dla sceny "mark".
-   Taka róźnica jest skutkiem ograniczonej ilości elementów które mogły by spełnić kryteria transformaty \textbf{SIFT}.
+   Charakterystyczną róźnicą odtwarzanych scen "A1" (Rysunek \ref{fig:feature_A1_plot}) i "mark" (Rysunek \ref{fig:feature_mark_plot}) pod względem wykrytych punktów kluczowych jest znacznie mniejsza ilość odnalezionych cech dla sceny "mark".
+   Taka róźnica jest skutkiem ograniczonej ilości elementów, które mogły by spełnić kryteria transformaty \textbf{SIFT}.
 
    Dodatkowo można odznaczyć bardzo dobry wynik jak zestawienia punktów kluczowych dla sceny "A1" (Rysunek \ref{fig:feature_A1_img_0} - \ref{fig:feature_A1_img_15}) przy tak dużej liczbie elementów kluczowych, jak i dokładność wyznaczonych kształtów sceny (Rysunek \ref{fig:feature_mark_plot}, \ref{fig:preset_mark_normal} - \ref{fig:preset_mark_ultra}) --- zdjęcia sceny "mark" rzeczywiście były robione przemieszczaniem kamery wzdłuż prostej.
 
@@ -188,7 +188,7 @@ Swoją drogą dla sceny "mark" --- sceny o niskiej entropii zbiór cech pozostaj
 Skutkiem ubocznym stosowania wyższych ustawień można uważać zwiększenie szumu (błędnie wykrytych i źle zlokalizowanych cech wspólnych) w scenach z duża ilością obiektów (Rysunek \ref{fig:preset_A1_normal}, \ref{fig:preset_A1_high}, \ref{fig:preset_A1_ultra}).
 
 Zestaw "c1" posiada zdięcia przy róźnym oświetleniu --- część zdjęć była zrobiona z dodatkowym źródłem światła.
-Można zauważyć, że rekonstrukcja sceny powiodła się dopiero przy większej liczbie cech, przy większym ustawieniu "high" (w porównaniu do innych zestawów odtwarzanie sceny następowało przy mniejszym nastawieniu), przy czym nawet przy ustawieniu "ultra", część pozycji wciąż nie jest odtwarzona.
+Można zauważyć, że rekonstrukcja sceny powiodła się dopiero przy większej liczbie cech, przy większym ustawieniu "high" (w porównaniu do innych zestawów odtwarzanie sceny następowało przy mniejszym nastawieniu), przy czym nawet przy ustawieniu "ultra", część pozycji wciąż nie jest odtwarzana.
 Jednym z warunków dobrego wyniku fotogrametrycznego jest niezmienność sceny w trakcie robienia zdjęć, w tym oświetlenia.
 
 \section{Czas obliczenia}

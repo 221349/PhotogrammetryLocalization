@@ -34,7 +34,8 @@ arg_parser.add_argument('--hide_labels', action='store_true')
 
 args = arg_parser.parse_args()
 
-if args.input: input_json = "/tmp/AV_tmp/" + args.input + "/dataStructureFromMotion.sfm"
+#if args.input: input_json = "/tmp/AV_tmp/" + args.input + "/dataStructureFromMotion.sfm"
+if args.input: input_json = args.input + "/dataStructureFromMotion.sfm"
 if args.cam_scale: cam_scale = args.cam_scale
 if args.cam_elong: cam_elong = args.cam_elong
 if args.marker_size: marker_size = args.marker_size

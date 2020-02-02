@@ -1,9 +1,189 @@
+\graphicspath{ {./img/data/} }
+
 \chapter{Przebieg badań}
+
+W badaniu zastosowano zestawy obrazów, każdy zestaw przedstawia następujące sceny:
+\begin{itemize}
+   \item Kostka Rubika na podstawce, "c0" (Rysunek \ref{fig:scene_c0}).
+   \item Kostka Rubika z oświetleniem równomiernym, "c1" (Rysunek \ref{fig:scene_c1}).
+   \item Kostka Rubika z oświetleniem punktowym, "c2" (Rysunek \ref{fig:scene_c2}).
+   \item Znaki specjalne, "mark" (Rysunek \ref{fig:scene_mark}).
+   \item Budynek A1 PWr (wybrzeże Wyspiańskiego 27), "A1" (Rysunek \ref{fig:scene_A1}).
+\end{itemize}
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=6cm]{img/c0.jpg}
+   \caption{Kostka Rubika na podstawce, scena "c0"}
+   \label {fig:scene_c0}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=6cm]{img/c1.jpg}
+   \caption{Kostka Rubika z oświetleniem równomiernym, scena "c1"}
+   \label {fig:scene_c1}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=6cm]{img/c2.jpg}
+   \caption{Kostka Rubika z oświetleniem punktowym, scena "c2"}
+   \label {fig:scene_c2}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=6cm]{img/mark.jpg}
+   \caption{Znaki specjalne, scena "mark"}
+   \label {fig:scene_mark}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=6cm]{img/A1.jpg}
+   \caption{Budynek A1 PWr, scena "A1"}
+   \label {fig:scene_A1}
+\end{figure}
+
+
+\section{Wpływ parametrów rozpoznawania cech}
+
+Pierwszy krok procesu fotogrametrycznego - rozpoznawanie cech w można dokonać z róźnym parametrem ustawień transformaty SIFT. Taki parametr, nazywany "preset" może przyjąć jedną z wartości ["low", "medium", "normal", "high", "ultra"]. Dla przeciętnej sceny stosowanie ustawień "low" i "medium" zwykle było niewystarczające aby wykryć jakiekolwiek pozycje kamery. Ustawienie "normal" okazało się wystarczającym aby wykryć 80\% pozycji. Ustawienia "high" i "ultra" pozwalają uzyskać najlepszy wynik, jednak stosowanie takich ustawień skutkuje znacznym wydłużeniem czasu obliczenia.
+
+Dogłębne wyszukiwanie cech może wykryć więcej punktów kluczowych w scenach z dużą entropią, np. dla sceny "A1", "c2", odtworzone sceny 3D (Rysunek \ref{fig:preset_c2_normal} - \ref{fig:preset_c2_ultra}, \ref{fig:preset_A1_medium} -  \ref{fig:preset_A1_ultra}) których posiadają charakterystyczny wzrost wykrytych cech wraz z wzrostem parametrem "preset".
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_c2/normal.png}
+   \caption{Odtworzona scena "c2", parametr: normal}
+   \label {fig:preset_c2_normal}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_c2/high.png}
+   \caption{Odtworzona scena "c2", parametr: high}
+   \label {fig:preset_c2_high}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_c2/ultra.png}
+   \caption{Odtworzona scena "c2", parametr: ultra}
+   \label {fig:preset_c2_ultra}
+\end{figure}
+
+Swoją drogą dla sceny o nieskiej entropii "mark" zbiór cech pozostaje praktycznie niezmienny (Rysunek \ref{fig:preset_mark_normal} - \ref{fig:preset_mark_ultra})
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_mark/normal.png}
+   \caption{Odtworzona scena "mark", parametr: normal}
+   \label {fig:preset_mark_normal}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_mark/high.png}
+   \caption{Odtworzona scena "mark", parametr: high}
+   \label {fig:preset_mark_high}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_mark/ultra.png}
+   \caption{Odtworzona scena "mark", parametr: ultra}
+   \label {fig:preset_mark_ultra}
+\end{figure}
+
+Skutkiem ubocznym stosowania wyższych ustawień można uważać zwiększenie szumu (błędnie wykrytych i zlokalizowanych cech) w scenach z duża ilością obiektów (Rysunek \ref{fig:preset_A1_normal}, \ref{fig:preset_A1_high}, \ref{fig:preset_A1_ultra}) w porównaniu do Rysunek \ref{fig:preset_A1_medium}).
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_A1/medium.png}
+   \caption{Odtworzona scena "A1", parametr: medium}
+   \label {fig:preset_A1_medium}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_A1/normal.png}
+   \caption{Odtworzona scena "A1", parametr: normal}
+   \label {fig:preset_A1_normal}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_A1/high.png}
+   \caption{Odtworzona scena "A1", parametr: high}
+   \label {fig:preset_A1_high}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{preset_A1/ultra.png}
+   \caption{Odtworzona scena "A1", parametr: ultra}
+   \label {fig:preset_A1_ultra}
+\end{figure}
+
 \section{Wpływ danych na wynik i czas obliczenia}
-\subsection{Jakość obrazów}
-\subsection{Ilość obrazów}
-\subsection{Zawartość obrazów}
-\section{Wpływ parametrów na wynik i czas obliczenia}
-\subsection{Jakość elementów kluczowych}
-\subsection{Ilość elementów kluczowych}
-\section{Eksperyment z pomiarem odległości}
+Każdy wykres \ref{fig:measure_c0} - \ref{fig:measure_A1} przedstawia zbiór trzech rodzajów danych:
+\begin{itemize}
+   \item Czas wykonania obliczenia - kolor czerwony
+   \item Procent wykrytych pozycji kamery - kolor niebieski
+   \item Procent powodzenia utworzenia sceny - kolor zielony
+\end{itemize}
+
+%\subsection{Jakość obrazów}
+%\subsection{Ilość obrazów}
+%\subsection{Zawartość obrazów}
+
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=7cm]{measure/c0.png}
+   \caption{Czas wykonania, scena "c0"}
+   \label {fig:measure_c0}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=7cm]{measure/c1.png}
+   \caption{Czas wykonania, scena "c1"}
+   \label {fig:measure_c1}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=7cm]{measure/c2.png}
+   \caption{Czas wykonania, scena "c2"}
+   \label {fig:measure_c2}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=7cm]{measure/mark.png}
+   \caption{Czas wykonania, scena "mark"}
+   \label {fig:measure_mark}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=7cm]{measure/A1.png}
+   \caption{Czas wykonania, scena "A1"}
+   \label {fig:measure_A1}
+\end{figure}
+
+%\section{Eksperyment z pomiarem odległości}
+
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/img_0.png}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 0, scena "A1"}
+   \label {fig:feature_A1_img_0}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/img_10.png}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 10, scena "A1"}
+   \label {fig:feature_A1_img_10}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/img_15.png}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 15, scena "A1"}
+   \label {fig:feature_A1_img_15}
+\end{figure}
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=10cm]{feature_A1/plot.png}
+   \caption{Wybrane punkty charakterystyczne, scena "A1"}
+   \label {fig:feature_A1_plot}
+\end{figure}

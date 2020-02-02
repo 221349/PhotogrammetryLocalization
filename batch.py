@@ -8,7 +8,7 @@ from numpy import savetxt
 from numpy import loadtxt
 
 D_CSV_FILE = "/measure.csv"
-D_ATTEMPTS = 10
+D_ATTEMPTS = 1
 PRESETS = ["low", "medium", "normal", "high", "ultra"]
 D_PRESETS = PRESETS[0:5]
 D_BASE = "/tmp/BATCH_tmp/"
@@ -24,24 +24,23 @@ pipeline.silent=True
 
 def check_poses(w_dir):
     sfm_json = w_dir + "/dataStructureFromMotion.sfm"
-    dci_json = w_dir + "/dataCameraInit.sfm"
     if os.path.isfile(sfm_json):
         with open(sfm_json, "r") as read_file:
             data = json.load(read_file)
         view = len(data['views'])
-        if os.path.isfile(dci_json):
-            with open(dci_json, "r") as read_file:
-                data = json.load(read_file)
-            out = view / len(data['views'])
-        else:
-            out = -1
+#        print(view)
+        out = len(data['poses']) / view
     else:
+#        print(sfm_json, ": Not  Found")
         out = 0
     return out
 
-def plot_data(data = None, dir = None):
+def plot_data(data = None, dir = None, skip_ImageMatching = False):
     if not data:
-        csv = D_BASE + "session_d/" + dir + D_CSV_FILE
+        if skip_ImageMatching:
+            csv = D_BASE + "sm_" + args.ses + dir + D_CSV_FILE
+        else:
+            csv = D_BASE + args.ses + dir + D_CSV_FILE
         if os.path.isfile(csv):
             data = loadtxt(csv, delimiter=',')
         else:
@@ -54,7 +53,7 @@ def plot_data(data = None, dir = None):
 
     fig, ax1 = plt.subplots()
 #    fig = matplotlib.pyplot.gcf()
-    fig.set_size_inches(12, 10)
+    fig.set_size_inches(6.4, 4.8)
     txtt_size = 19
     txt_size = 16
     txtl_size = 13
@@ -62,7 +61,7 @@ def plot_data(data = None, dir = None):
     marker_size = 8
     color = '#880000'
     color1 = '#2222aa'
-    color2 = '#000000'
+    color2 = '#00aa00'
 #    ax1.set_yscale('log')
 
     ax1.set_title(dir, fontsize=txtt_size)
@@ -86,6 +85,7 @@ def batch_run(
     data = [],
     n_attempts = D_ATTEMPTS,
     presets = D_PRESETS,
+    skip_ImageMatching = False,
     base = D_BASE + "session_d/"
 ):
     for img in data:
@@ -115,12 +115,21 @@ def batch_run(
         savetxt(base + img + D_CSV_FILE, data, delimiter=', ')
 
 def all_f():
-    data = os.listdir(D_BASE + "session_d/")
-    for img in data:
-        plot_data(dir=img)
+    dir = D_BASE + "sm_" + args.ses
+    if os.path.isdir(dir):
+        data = os.listdir(dir)
+        for img in data:
+            plot_data(dir=img, skip_ImageMatching = True)
+
+    dir = D_BASE + args.ses
+    if os.path.isdir(dir):
+        data = os.listdir(dir)
+        for img in data:
+            plot_data(dir=img)
 
 
 if args.data:
+    batch_run(data = args.data, base = D_BASE + "sm_" + args.ses, skip_ImageMatching = True)
     batch_run(data = args.data, base = D_BASE + args.ses)
 
 if args.plot:

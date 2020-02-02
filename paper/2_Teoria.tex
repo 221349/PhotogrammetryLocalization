@@ -2,7 +2,7 @@
 
 
 \chapter{Fotogrametria. Wprowadzenie teoretyczne}
-W tym rozdziale proces jest opisany na przykładzie działania AliceVision.
+
 Fotogrametria - dziedzina nauki, sztuki i technologia mająca na celu wyznaczanie informacji i odtworzanie kształtów jednego lub więcej obiektu fizycznego na podstawie zdjęć obiektu.
 Fotogrametria można podizelić na dwa rodzaje: płaską i przestrzenną. Fotogrametria płaska wymaga co najmniej jednego zdjęcia i jej wynikiem jest charakterystyka obiektu w płaszczyźnie. Fotogrametria przestrzenna wymaga dwóch lub więcej zdjęć, jest używana do odtwarzania obiektów w przestrzeni trójwymiarowej.
 
@@ -19,7 +19,15 @@ Pozwala wyznaczyć takie charakterystyki jak:
 Dodatkowo technologia fotogrametrii pozwala na wyznaczenie położenia kamery (obserwatora) w chwili robienia zdjęcia fotogrametrycznego.
 Położenie kamery w przestrzeni trójwymiarowej jest wyznaczane na podstawie bazy sceny i wybranego zdjęcia zawierającego całość lub część sceny.
 
-W tej części będzie rostatrzony proces fotogrametryczny dla wyznaczania cech sceny i budowy sceny w przestrzeni 3D wraz z lokalizacją kamer na podstawie frameworku AliceVision. Proces ten można rozbić na poszczególne etapy, każdy etap jest opisany w rozdziałach 2.1-2.5.
+\textbf{Cecha}, punkt kluczowy --- element charakterystyczny obiektu wyróżniający się na tyle, aby można było zidentyfikować ten sam element na zdjęciu z innego ujęcia.
+
+Pojęcie \textbf{sceny fotogrametrycznej}, często wykorzystywane w tym dokumencie, oznacza zbiór statycznych obiektów fizycznych powiązane zdjęcia których używane są do odtwarzania kształtów tego zbioru w przestrzeni trójwymiarowej. Wymaganie dla zbioru zdjęć sceny sceny jest takie, aby zdjęcia zawierały róźne ujęcia scena, przy czym posiadały jeden lub więcej elementów wspólnych i przy takich samych warunkach: oświetlenie, stan sceny, ustawienia kamery i obiektywu, taki sam aparat fotograficzny.
+
+Odtwarzanie kształtów oznacza umieszczenie punktów charakterystycznych obiektów w przestrzeni 3D w taki sposób, aby położenie cech względem siebie odpowiadało położeniu w rezeczywistości. Odbywa się na podstawie wykrycia cech charakterystycznych, w tym ich skali, obrotu i położeniu na zdjęciu, a następnie szacowaniu położenia wspólnych cech jednej lub więcej pary zdjęć na podstawie informacji o skali, obrotu i położeniu cechy na zdjęciu.
+
+Proponowane podejście lokalizacji kamery(obserwatora) w chwili zrobienia zdjęcia opiera się o wyznaczeniu pozycji względem cech charakterystycznych obiektu sceny.
+
+Zaproponowany proces fotogrametryczny dla wyznaczania cech sceny i budowy sceny w przestrzeni 3D wraz z lokalizacją kamer odzwierciedla podejście wykorzystane w platformie AliceVision (opisana jest w rozdziale 3.1) dla rozwiązania analogicznego problemu. Proces ten można rozbić na poszczególne etapy, każdy etap jest opisany w rozdziałach 2.1-2.5.
 
 \section{Wyznaczanie punktów kluczowych. Transformata SIFT}
 Obraz z zestawu zdjęć fotogrametrycznych posiada cechy kluczowe które mogą być na tyle charakterystyczne, że można z wysokim prawdopodobieństwem je znaleźć w bazie cech innego zdjęcia zawierającego ten sam obiekt.
@@ -90,7 +98,7 @@ Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowyc
 \subsection{Róźnica filtrów Gaussa}:
    Funkcja \textbf{DoG} (Difference of Gaussians - Róźnica filtrów Gaussa) wyznacza obszary na obrazie które mogą zawierać elementy kluczowe (krok 2 transformacji \textbf{SIFT}). Funkcja \textbf{DoG} jest przybliżeniem \textbf{LoG} (Laplasjan filtru Gaussa) - funkcją filtrują która definiuje macierz konwolucji dla filtracji obrazu. Filtracja obrazu (Rysunek \ref{fig:DoG})  wykrywa krewędzie nie zależnie od ich skali i obrotu, w taki sposób można odrzucić obszary obrazu, dalsza analiza których jest zbędna.
    \begin{equation} \label{eq:DoG}
-      \mathbf{D} = L(x, y, k_i \sigma) - L(x, y, k_i \sigma)
+      \mathbf{DoG} = L(x, y, k_i \sigma) - L(x, y, k_i \sigma)
    \end{equation}
    gdzie
    \begin{equation} \label{eq:DoG}

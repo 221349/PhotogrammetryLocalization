@@ -16,6 +16,7 @@ LINE_SIZE = 2
 ## SETUP:                     ##
 
 fig = plt.figure()
+fig.set_size_inches(10, 10)
 ax = fig.add_subplot(111, projection='3d')
 ax.set_xlabel('X', fontsize=14)
 ax.set_ylabel('Y', fontsize=14)
@@ -99,6 +100,7 @@ def image(
 ):
     img =  plt.imread(fname=path)
     figure = plt.figure()
+    figure.set_size_inches(10, 10)
     out = figure.add_subplot()
     plt.title(name)
     for i in range(0,len(points)):

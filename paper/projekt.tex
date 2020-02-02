@@ -1,4 +1,6 @@
 \documentclass[eng, draft, openany]{mgr} %Draft
+%\documentclass[eng, openany]{mgr} %Draft with img
+
 %\documentclass[eng, printmode, final]{mgr} %Print
 
 \usepackage{polski}
@@ -31,9 +33,9 @@
 %dane do złożenia strony tytułowej
 \title{Zastosowanie algorytmów fotogrametrii dla estymacji położenia obserwatora w przestrzeni trójwymiarowej}
 \engtitle{A photogrammetric approach for observer's position estimation in 3D}
-\author{? Lev Sergeyev 221349}
-\supervisor{? Dr hab. inż. Przemysław Śliwiński, prof. PWr}
-\guardian{? Prof. dr hab. inż. Czesław Smutnicki, prof. PWr}
+\author{Lev Sergeyev}
+\supervisor{Dr hab. inż. Przemysław Śliwiński}
+%\guardian{? Prof. dr hab. inż. Czesław Smutnicki, prof. PWr}
 
 \date{2020} %standardowo u dołu strony tytułowej umieszczany jest bieżący rok, to polecenie pozwala wstawić dowolny rok
 
@@ -49,25 +51,21 @@
 %\bibliographystyle{plabbrv} %tylko gdy używamy BibTeXa, ustawia polski styl bibliografii
 
 \maketitle
-\tableofcontents %spis treści
+
+\tableofcontents
+\listoffigures
+% \listoftables
 
 \relax
-
-
 
 \include{1_Wstep}
 \include{2_Teoria}
 \include{3_Srodowisko}
 \include{4_Badania}
-\include{5_Wnioski}
+\include{5_Podsumowanie}
 
-\appendix
-\chapter{Dodatek}
+%\appendix
+%\chapter{Dodatek}
 
-\addcontentsline{toc}{chapter}{\bibname} %utworzenie w spisie treści pozycji Literatura
-\bibliography{bibliografia} % wstawia bibliografię korzystając z pliku bibliografia.bib - dotyczy BibTeXa, jeżeli nie korzystamy z BibTeXa należy użyć otoczenia thebibliography
 
-%opcjonalnie może się tu pojawić spis rysunków i tabel
-% \listoffigures
-% \listoftables
 \end{document}

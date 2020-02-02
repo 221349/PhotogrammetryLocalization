@@ -101,7 +101,7 @@ Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowyc
       \mathbf{DoG} = L(x, y, k_i \sigma) - L(x, y, k_i \sigma)
    \end{equation}
    gdzie
-   \begin{equation} \label{eq:DoG}
+   \begin{equation} \label{eq:DoG_}
       L(x, y, k_i \sigma) = G(x, y, k\sigma) * I(x, y)
    \end{equation}
 
@@ -125,32 +125,43 @@ Aby zminimalizować zapotrzebowanie zasobów na wyznaczanie elementów kluczowyc
          \centering
          \includegraphics[width=5cm]{SIFT_cube_points.png}
          \label {fig:SIFT_points}
+         \caption{Zlokalizowane cechy na zdjęciu}
       \end{figure}
 
 \subsection{Przydział obrotu}
       Dla każdego punktu kluczowego jest przydzielana jedna lub więcej orientacji.
       Przekształcenie elementu charakterystycznego w stosunku do lokalizacji, skali i orientacji pozwala zapewnić niezmienność transformacji cechy dla następnych operacji.
+      \begin{figure}[h]
+         \centering
+         \includegraphics[width=6cm]{SIFT_opencv.jpg}
+         \label {fig:SIFT_rot}
+         \caption{Przydzielony obrót cech na zdjęciu}
+      \end{figure}
 \subsection{Deskryptor punktu kluczowego}
-      Transformata gradientów lokalnych
+      Deskryptor cechy jest otrzymany w sposób zastosowania transformata gradientów lokalnych na obszczarze cechy a następnie
+      \begin{figure}[h]
+         \centering
+         \includegraphics[width=8cm]{SIFT_vectors.jpg}
+         \label {fig:SIFT_desc}
+         \caption{Opis cechy na zdjęciu}
+      \end{figure}
 
-Cechy zdjęcia wykryte transformacją  \textbf{SIFT} są bardzo charakterystyczne, co pozwala z wysokim prawdopodobieństwem wykryć właściwy punkt w bazie danych innego zdjęcia.
+Cechy zdjęcia wykryte transformacją \textbf{SIFT} są bardzo charakterystyczne, co pozwala z wysokim prawdopodobieństwem wykryć właściwy punkt w bazie danych innego zdjęcia.
 
 \section{Parowanie obrazów}
 Ten krok ma 2 cele:
 Aby zredukować ilość błędnych par punktów charakterystycznych, kiedy 2 obrazy nie posiadają wspólnych części sceny.
-Aby przyspieszyć wykonanie następnego kroku - \textbf{zestawienie punktów kluczowych}.
+Aby przyspieszyć wykonanie następnego kroku --- \textbf{zestawienie punktów kluczowych}.
+
 \section{Zestawienie punktów kluczowych}
+
 \section{Wyznaczanie kształtów sceny}
+Podejście AdaptiveStructurefromMotion
+
+\begin{figure}[h]
+   \centering
+   \includegraphics[width=7cm]{SfM.png}
+   \label {fig:SfM}
+   \caption{Wyznaczanie pozycji cechy}
+\end{figure}
 \section{Lokalizacja kamery}
-
-
-
-
-SK:
-Fotogrametria
-
-Punkt charakterystyczny
-Element kluczowy
-Cechy charakterystyczne
-SIFT (Scale Invariant Feature Transform - Transformata )
-Deskryptor

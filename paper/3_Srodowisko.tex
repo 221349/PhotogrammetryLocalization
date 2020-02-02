@@ -1,36 +1,72 @@
 \chapter{Budowa śródowiska}
 
-Dla praktycznego sprawdzenia zostało napisane sródowisko składające się z narzędzi:
+Praktyczna realizacja zaproponowanego rozwiązania składa się z dwóch części: platformy fotogrametrycznej i zestawu skryptów.
 
 \section{Platforma AliceVision}
 
-\textbf{AliceVision} --- framework fotogrametryczny stworzony był aby umożliwić odtworzenie \textbf{sceny fotogrametrycznej} na podstawie zbioru zdjęć lub sekwencji klatek wideo zawierających scene.
-
-Wybrane możliwości platformy umożliwiają:
+\textbf{AliceVision} --- framework fotogrametryczny z otwartym kodem źródłomym, udostępnianystworzony pod licensją \textbf{MPL2}.
+Platforma została stworzona aby umożliwić odtworzenie \textbf{sceny fotogrametrycznej} na podstawie zbioru zdjęć lub sekwencji klatek wideo zawierających scene. Framework powstał i jest rozwijany jako projekt wspólny takie centra naukowe, jak:
 \begin{itemize}
-\item Wyznaczanie punktów charakterystycznych --- cech sceny
-\item Parowanie zdjęć --- para jest tworzony gdy zdjęcia zawierają ten sam obiekt
-\item Zestawienie cech zdjęć
-\item Odtworzenie struktury cech w przestrzeni 3D
-\item Lokalizacja względna i bezwzględna kamery
-\item Kalibracja kamery
-\item Utworzenie mapy głębokości sceny
-\item Odworzenie powierzchni obiektów sceny
-\item Teksturowanie obiektów sceny
+   \item Czech Technical University (CTU) in Prague, Czech Republic
+   \item Institut National Polytechnique de Toulouse (Toulouse INP), France
+   \item Mikros Image, Post-Production Company in Paris, France
+   \item Simula Research Laboratory AS in Oslo, Norway
+   \item Quine in Oslo, Norway
+   \item Wspierany przez European Union’s Horizon 2020
 \end{itemize}
+
+Aby wykorzystać framework należy pobrać kod źródłowy projektu i zbudować go w swoim śródowisku.
+Istnieje również możliwość pobrania już gotowego projektu w postaci narżedzia \textbf{Meshroom}, program ten jest swojego rodzaju powłóką graficzną dla \textbf{AliceVision} i pozwala w łatwy sposób zapoznać się z możliwościami i sposobem działania platformy.
+Pliki frameworku znajdują się w katalogu głównym programu.
+
+Zbudowany framework przedstawia sobą zestaw plików binarnych - pliki wykonywalne i biblioteki dynamiczne.
+Każdy plik wykonywalny przedstawia sobą osobne narzędzie.
+Wybrane narzędzia platformy umożliwiają:
+\begin{itemize}
+   \item Wyznaczanie punktów charakterystycznych --- cech sceny
+   \item Parowanie zdjęć --- para jest tworzony gdy zdjęcia zawierają ten sam obiekt
+   \item Zestawienie cech zdjęć
+   \item Odtworzenie struktury cech w przestrzeni 3D
+   \item Lokalizacja względna i bezwzględna kamery
+   \item Kalibracja kamery
+   \item Utworzenie mapy głębokości sceny
+   \item Odworzenie powierzchni obiektów sceny
+   \item Teksturowanie obiektów sceny
+\end{itemize}
+
+Wykorzystanie i komunikacja z \textbf{AliceVision} odbywa się w sposób uruchomienia odpowiedniego pliki wykonywalnego w powłoce systemu (np linii poleceń) z odpowiednim zestawem parametrów.
+Wszystkie operacje odczytu/zapisu odbywają się na plika, ścieżka których jest określana w parametrach.
+Na potrzeby pracy wykorzystano następujące narzędzia:
+
+\begin{enumerate}
+   \item \textbf{CameraInit}: inicjacja danych, odczyt parametrów kamery,
+   \item \textbf{FeatureExtraction}: wyszukiwanie cech,
+   \item \textbf{ImageMatching}: parowanie zdjęć,
+   \item \textbf{FeatureMatching}: parowanie cech,
+   \item \textbf{StructureFromMotion}: odtworzenie struktury cech w przestrzeni, lokalizacja kamery.
+\end{enumerate}
+
+Narzędzia są opisane w kolejności odpowiedniej do kolejności uruchomienia, taka kolejność zapewnia przetwarzanie potokowe danych.
+Każde narzędzie jest opisane w poszczególnych rozdziałach pod względem danych wejścia/wyjścia i zastosowanych parametrach w przetwarzaniu danych.
 
 \subsection{CameraInit}
 \subsection{FeatureExtraction}
-Najwiej
 \subsection{ImageMatching}
 \subsection{FeatureMatching}
 \subsection{StructureFromMotion}
+
+Zaletą \textbf{AliceVision} można nazwać wieloplatformowość, framework można zbudować dla takich systemów operacyjnych, jak Windows, Linux lub OSX.
+Do zalet platformy AliceVision można również odnieść ten fakt, iż jej narzędzia zaimplementowane z wykorzystaniem takich technologii, jak na przykład \textbf{Mosek}, stosowanie których pozwala zoptymalizować i przyspieszyć wykonanie części algorytmów zwłaszcza algorytmy liniowe.
+Stosowanie \textbf{OpenMP} pozwala na obliczenia wielowonkowe, a \textbf{CUDA} czy \textbf{OpenCL} umożliwiają przyrost poprzez wykonanie prostych operacji algebraicznych na procesorach graficznych.
+
 \section{Implementacja śródowiska}
+
+Dla realizacji zaproponowanego algorytmu i wyświetlania wyników został napisany zestaw skryptów w języku \textbf{Python} wersji 3.8.1 pozwalające na:
 \begin{itemize}
-\item przetwarzania danych wejściowych w celu zestawienia zdjęć i lokalizacji kamery
-\item wyświetlania wyników fotogrametrycznych i położenia kamery w przestrzeni
-\item wyświetlania elementów kluczowych w przestrzeni i odpowiednich obrazach
-\item przeprowadzania testów wydajności dla róźnych zestawów danych i parametrów przetwarzania
+   \item pojedyńcze przetwarzanie zestawu zdjęć sceny w celu odtworzenia sceny i lokalizacji kamery,
+   \item wyświetlanie odtworzonej sceny w postaci punktów kluczowych i położenia kamer,
+   \item wyświetlanie wybranych punktów kluczowych w przestrzeni i odpowiednich zdjęciach,
+   \item przeprowadzanie testów wydajności dla zbioru róźnych zestawów danych i parametrów przetwarzania,
 \end{itemize}
 
 \subsection{Pipeline}

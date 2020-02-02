@@ -39,13 +39,123 @@ Na potrzeby pracy wykorzystano następujące narzędzia:
 \end{enumerate}
 
 Narzędzia są opisane w kolejności odpowiedniej do kolejności uruchomienia, taka kolejność zapewnia przetwarzanie potokowe danych.
-Każde narzędzie jest opisane w poszczególnych rozdziałach pod względem danych wejścia/wyjścia i zastosowanych parametrach w przetwarzaniu danych.
+Każde narzędzie jest opisane w poszczególnych rozdziałach pod względem danych wejścia/wyjścia i parametrach w zastosowanych przetwarzaniu danych.
+
+Dla wszystkich wykorzystanych instrumentów można zadać poziom logowania (rejestracji zdarzeń) używając parametru \texttt{--verboseLevel} który przyjmuje wartości \texttt{(fatal, error, warning, info, debug, trace)}
 
 \subsection{CameraInit}
+
+\texttt{aliceVision\_cameraInit} --- narzędzie inicjalizacji procesu odtwarzania.
+Wykrywa i zapisuje listę zbióru zdjęć.
+Definiuję parametry kamery, takie jak \textbf{długość ogniskową} przeszukując bazę kamer na podstawie modelu odczytanego z metadanych zdjęcia. Istnieje możliwość obliczenia parametrów na podstawie kąta widzenia obiektywu.
+
+\begin{itemize}
+   \item Parametry wejścia:
+   \begin{itemize}
+      \item[--] \texttt{--imageFolder} --- ścieżka folderu zawierającego zestaw obrazów.
+   \end{itemize}
+
+   \item Parametry wyjścia:
+   \begin{itemize}
+      \item[--] \texttt{--output} --- \texttt{"cameraInit.sfm"}, plik zawierajcy listę danych i ustawienia początkowe sceny
+   \end{itemize}
+
+   \item Dodatkowe parametry
+   \begin{itemize}
+      \item[--] \texttt{ --sensorDatabase } --- baza parametrów kamer, standardowa ścieżka:
+
+      \texttt{"aliceVision/share/aliceVision/cameraSensors.db"},
+      \item[--] \texttt{ --defaultFieldOfView } --- kąt widzenia obiektywu, użyta kamera ma kąt 56 stopni.
+   \end{itemize}
+\end{itemize}
+
 \subsection{FeatureExtraction}
+
+\texttt{aliceVision\_featureExtraction} --- narzędzie dla rozpoznawania i utworzenia zbioru deskryptorów chech dla każdego zdjęcia --- transformany \textbf{SIFT}.
+
+\begin{itemize}
+   \item Parametry wejścia:
+   \begin{itemize}
+      \item[--] \texttt{--input} --- plik \texttt{"cameraInit.sfm"}
+   \end{itemize}
+
+   \item Parametry wyjścia:
+   \begin{itemize}
+      \item[--] \texttt{--output} --- ścieżka folderu dla przechowania deskryptorów, \texttt{"FeatureExtraction"}
+   \end{itemize}
+
+   \item Dodatkowe parametry
+   \begin{itemize}
+      \item[--] \texttt{--describerPreset} --- ustawienie transformaty \textbf{SIFT}, przyjmuje wartości \texttt{(low, medium, normal, high, ultra)}
+   \end{itemize}
+\end{itemize}
+
 \subsection{ImageMatching}
+
+\texttt{aliceVision\_imageMatching} --- narzędzie dla utworzenia zbioru par zdjęć.
+Stosowanie tego narzędzia nie jest obowiązkowe.
+Zalecane jest, jednak, dokonanie parowania zdjęć gdyż pozwala to ograniczyć liczbę danych wejściowych \textbf{FeatureMatching} i tym samym przyspieszyć wykonanie procesu fotogrametrii i zredukować prawdopodobieństwo wystąpienia błędnej pary cech.
+
+\begin{itemize}
+   \item Parametry wejścia:
+   \begin{itemize}
+      \item[--] \texttt{--input} --- plik \texttt{"cameraInit.sfm"}
+      \item[--] \texttt{--featuresFolders} --- folder \texttt{"FeatureExtraction"}
+   \end{itemize}
+
+   \item Parametry wyjścia:
+   \begin{itemize}
+      \item[--] \texttt{--output} --- plik przechowujący wykryte pary, \texttt{"ImageMatching.txt"}
+   \end{itemize}
+
+   \item Dodatkowe parametry
+   \begin{itemize}
+      \item[--] \texttt{--tree} --- plik drzewa słownikowego, standardowa ścieżka:
+
+      \texttt{"aliceVision/share/aliceVision/vlfeat\_K80L3.SIFT.tree"}
+   \end{itemize}
+\end{itemize}
+
 \subsection{FeatureMatching}
+
+\texttt{aliceVision\_featureMatching} --- narzędzie dokonujące odnalezienia i zapisania par cech dla każdej pary zdjęć.
+
+\begin{itemize}
+   \item Parametry wejścia:
+   \begin{itemize}
+      \item[--] \texttt{--input} --- plik \texttt{cameraInit.sfm}
+      \item[--] \texttt{--featuresFolders} --- folder \texttt{"FeatureExtraction"}
+   \end{itemize}
+
+   \item Parametry wyjścia:
+   \begin{itemize}
+      \item[--] \texttt{--output} --- folder dla przechowania wykrytych par cech \texttt{"FeatureMatching"}
+   \end{itemize}
+
+   \item Dodatkowe parametry
+   \begin{itemize}
+      \item[--] \texttt{--imagePairsList} --- jeśli dokonano parowania zdjęć, plik \texttt{"ImageMatching.txt"}
+   \end{itemize}
+\end{itemize}
+
 \subsection{StructureFromMotion}
+
+\texttt{aliceVision\_incrementalSfM} --- narzędzie dla rekonstrukcji sceny. Pozwala odwarzać położenie punktów charakterystycznych w przestrzeni i odpowiadające im pozycje kamery.
+
+\begin{itemize}
+   \item Parametry wejścia:
+   \begin{itemize}
+      \item[--] \texttt{--input} --- plik \texttt{cameraInit.sfm}
+      \item[--] \texttt{--featuresFolders} --- folder \texttt{"FeatureExtraction"}
+      \item[--] \texttt{--matchesFolders} --- folder \texttt{"FeatureMatching"}
+   \end{itemize}
+
+   \item Parametry wyjścia:
+   \begin{itemize}
+      \item[--] \texttt{--output} --- plik przechowujący rekonstruowaną scene: cechy i pozycje kamery,  \texttt{"StructureFromMotion.sfm"}
+   \end{itemize}
+\end{itemize}
+
 
 Zaletą \textbf{AliceVision} można nazwać wieloplatformowość, framework można zbudować dla takich systemów operacyjnych, jak Windows, Linux lub OSX.
 Do zalet platformy AliceVision można również odnieść ten fakt, iż jej narzędzia zaimplementowane z wykorzystaniem takich technologii, jak na przykład \textbf{Mosek}, stosowanie których pozwala zoptymalizować i przyspieszyć wykonanie części algorytmów zwłaszcza algorytmy liniowe.
@@ -64,16 +174,25 @@ Framework powstał i jest rozwijany jako projekt wspólny przez takie centra nau
 \section{Implementacja śródowiska}
 
 Dla realizacji zaproponowanego algorytmu i wyświetlania wyników został napisany zestaw skryptów w języku \textbf{Python} wersji 3.8.1 pozwalające na:
-\begin{itemize}
-   \item pojedyńcze przetwarzanie zestawu zdjęć sceny w celu odtwarzania sceny i lokalizacji kamery,
-   \item wyświetlanie odtwarzonej sceny w postaci punktów kluczowych i położenia kamer,
-   \item wyświetlanie wybranych punktów kluczowych w przestrzeni i odpowiednich zdjęciach,
-   \item przeprowadzanie testów wydajności dla zbioru róźnych zestawów danych i parametrów przetwarzania,
-\end{itemize}
+
+Dla skryptów wykonujących wprowadzono system odczytu argumentów zaimplementowany w bibliotece \textbf{\texttt{argparse}}. Przykład implementacji takiego systemu:
+
+\begin{python}
+arg_parser = argparse.ArgumentParser()
+
+arg_parser.add_argument('--input', '-i', default="")
+arg_parser.add_argument('--select_pose', nargs='+')
+arg_parser.add_argument('--marker_size', default=MARKES_SIZE, type=float)
+arg_parser.add_argument('--select_features', type=int)
+
+args = arg_parser.parse_args()
+\end{python}
+
 
 \subsection{Proces rekonstrukcji sceny}
 
 Dla każdego narzędzia platformy \textbf{AliceVision} została stworzona funkcja przedstawiający uproszczony interfejs narzędzia.
+Przykład funkcji która tworzy polecenie i uruchamia narzędzie frameworku:
 
 \begin{python}
 def cameraInit(
@@ -89,12 +208,12 @@ def cameraInit(
     return run("0_CameraInit", cmd, v_level, log_dir)
 \end{python}
 
-Wszystkie funkcje narzędzi były połączone w "pipeline" --- funkcję która przedstawia cały proces odtwarzania sceny.
-Wejściem takiej funkcji są zdjęcia sceny i parametry przetwarzania, a wyjściem jest struktura opisująca rekonstruowaną scenę. 
+Wszystkie funkcje narzędzi były połączone w \texttt{"pipeline"} --- funkcję która przedstawia cały proces odtwarzania sceny.
+Wejściem takiej funkcji są zdjęcia sceny i parametry przetwarzania, a wyjściem jest struktura opisująca rekonstruowaną scenę.
 
 \subsection{Odczyt danych sceny}
 
-Wynik odtwarzania sceny przez narzędzie \textbf{StructureFromMotion} jest zapisywany w postaci drzewa \textbf{json} do pliku z rozszerzeniem \texttt{.sfm}.
+Wynik odtwarzania sceny przez narzędzie \textbf{StructureFromMotion} jest zapisywany w postaci drzewa \textbf{json} do pliku \texttt{"StructureFromMotion.sfm"}.
 Struktura użytych węzłów takiego pliku jest następująca (żółty kolor oznacza węzeł przechowujący dane):
 
 \tikzstyle{every node}=[draw=black,thick,anchor=west]
@@ -135,11 +254,11 @@ Struktura użytych węzłów takiego pliku jest następująca (żółty kolor oz
       };
 \end{tikzpicture}
 
-Węzeł \texttt{”views”} zawiera zbiór wszystkich zdjęć zestawu, każdemu zdjęciu przydzielony jest numer ujęcia \texttt{id}.
+Węzeł [\texttt{”views”}] zawiera zbiór wszystkich zdjęć zestawu, każdemu zdjęciu przydzielony jest numer ujęcia \texttt{id}.
 
-Węzeł \texttt{”poses”} zawiera zbiór informacji o wykrytej pozycji. Każda pozycja dpowiada jednemu z zdjęć w zestawie i zawiera macierz rotacji i translacji obserwatora.
+Węzeł [\texttt{”poses”}] zawiera zbiór informacji o wykrytej pozycji. Każda pozycja dpowiada jednemu z zdjęć w zestawie i zawiera macierz rotacji i translacji obserwatora.
 
-Węzeł \texttt{”structure”} zawiera zbiór punktów kluczowych. Każdy z tych punktów przechowuje wektor pozycji w przestrzeni, kolor cechy i zbiór pozycji których dotyczy wraz z wektorem położenia na zdjęciu każdej pozycji.
+Węzeł [\texttt{”structure”}] zawiera zbiór punktów kluczowych. Każdy z tych punktów przechowuje wektor pozycji w przestrzeni, kolor cechy i zbiór pozycji których dotyczy wraz z wektorem położenia na zdjęciu każdej pozycji.
 
 Stosowanie biblioteki \textbf{\texttt{json}} pozwala w łatwy sposób odczytać wybrane pola takiego pliku.
 Przykład kodu wyświetlający ścieżki plików ujęć:
@@ -172,10 +291,10 @@ Część kodu rysująca zbiór punktów kolorowych przedstawiających cechy i  o
    ax.scatter(points.xs, points.ys, points.zs, marker='o', c=points.cs, s=point_size)
 
 # Dodac kamere:
-   # Narysować uklad wspolrzednych:
+   # Narysowac uklad wspolrzednych:
    ax.quiver(*origin, a[:,0], a[:,1], a[:,2], color='b')
 
-   # Narysowac płaszczyzny ostroslupa:
+   # Narysowac płlaszczyzny ostroslupa:
    ax.add_collection3d(Poly3DCollection(cam, facecolors='#00ff00', edgecolors='r', alpha=.25))
    ax.add_collection3d(Poly3DCollection(cam_face, facecolors='#ffff00', edgecolors='r', alpha=.5))
 
@@ -186,3 +305,12 @@ Część kodu rysująca zbiór punktów kolorowych przedstawiających cechy i  o
 Funkcja \texttt{ax2 = ax1.twinx()} pozwala dodać nowy obszczar danych do istniejącego wykresu. W wyniku otrzymując wykres z podwójną osią Y którego dane mogą mieć róźną skalę (np. Rysunek \ref{fig:measure_c0}.
 
 \subsection{Pomiar czasu}
+
+Dla porównania przebiegu procesu odtwarzania wprowadzono pomiar wykonywania dla każdego kroku "pipeline". Po czym zmierzony czas się sumuje i zwraca się wraz z wynikiem odtwarzania sceny funkcją \texttt{"pipeline"}.
+
+Proces uruchomienia funkcji \texttt{"pipeline"} jest zautomatyzowany dla każdego elementu macierzy utworzonej wektorami:
+\begin{itemize}
+   \item Danych wejściowych,
+   \item Parametru transformaty \textbf{SIFT},
+   \item Próby(aby uśrednić pomiar czasu).
+\end{itemize}

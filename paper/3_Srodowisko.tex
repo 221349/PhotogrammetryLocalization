@@ -71,6 +71,118 @@ Dla realizacji zaproponowanego algorytmu i wyświetlania wyników został napisa
    \item przeprowadzanie testów wydajności dla zbioru róźnych zestawów danych i parametrów przetwarzania,
 \end{itemize}
 
-\subsection{Pipeline}
-\subsection{Rysowanie}
+\subsection{Proces rekonstrukcji sceny}
+
+Dla każdego narzędzia platformy \textbf{AliceVision} została stworzona funkcja przedstawiający uproszczony interfejs narzędzia.
+
+\begin{python}
+def cameraInit(
+ data_dir,
+ cameraInit_file,
+ fieldOfView = D_FIELD_OF_VIEW,
+ v_level = D_VERBOSE_LEVEL,
+ log_dir = D_LOG_DIR
+):
+    cmd = av + "cameraInit --imageFolder " + data_dir + " -o " + cameraInit_file
+    cmd += " --defaultFieldOfView " + fieldOfView
+    cmd += " --sensorDatabase " + SENSOR_DB
+    return run("0_CameraInit", cmd, v_level, log_dir)
+\end{python}
+
+Wszystkie funkcje narzędzi były połączone w "pipeline" --- funkcję która przedstawia cały proces odtwarzania sceny.
+Wejściem takiej funkcji są zdjęcia sceny i parametry przetwarzania, a wyjściem jest struktura opisująca rekonstruowaną scenę. 
+
+\subsection{Odczyt danych sceny}
+
+Wynik odtwarzania sceny przez narzędzie \textbf{StructureFromMotion} jest zapisywany w postaci drzewa \textbf{json} do pliku z rozszerzeniem \texttt{.sfm}.
+Struktura użytych węzłów takiego pliku jest następująca (żółty kolor oznacza węzeł przechowujący dane):
+
+\tikzstyle{every node}=[draw=black,thick,anchor=west]
+\tikzstyle{selected}=[draw=black,fill=yellow!30]
+\begin{tikzpicture}[%
+   grow via three points={one child at (0.5,-0.7) and
+   two children at (0.5,-0.7) and (0.5,-1.4)},
+   edge from parent path={(\tikzparentnode.south) |- (\tikzchildnode.west)}]
+   \node {.sfm}
+      child { node {"views"}
+         child {node [selected] {"poseId":id}}
+         child {node [selected] {"path":ścieżka zdjęcia}}
+      }
+      child [missing] {}
+      child [missing] {}
+      child [missing] {}
+      child { node {"poses"}
+         child {node [selected] {"poseId":id}}
+         child { node {"pose"}
+            child { node {"transform"}
+               child {node [selected] {"rotation":[macierz rotacyjna]}}
+               child {node [selected] {"center":[macierz translacyjna]}}
+            }
+         }
+      }
+      child [missing] {}
+      child [missing] {}
+      child [missing] {}
+      child [missing] {}
+      child [missing] {}
+      child { node {"structure"}
+         child {node [selected] {"color":[kolor RGB]}}
+         child {node [selected] {"X":[wektor 3D]}}
+         child { node {"observations"}
+            child {node [selected] {"observationId":id}}
+            child {node [selected] {"x":[wektor 2D]}}
+         }
+      };
+\end{tikzpicture}
+
+Węzeł \texttt{”views”} zawiera zbiór wszystkich zdjęć zestawu, każdemu zdjęciu przydzielony jest numer ujęcia \texttt{id}.
+
+Węzeł \texttt{”poses”} zawiera zbiór informacji o wykrytej pozycji. Każda pozycja dpowiada jednemu z zdjęć w zestawie i zawiera macierz rotacji i translacji obserwatora.
+
+Węzeł \texttt{”structure”} zawiera zbiór punktów kluczowych. Każdy z tych punktów przechowuje wektor pozycji w przestrzeni, kolor cechy i zbiór pozycji których dotyczy wraz z wektorem położenia na zdjęciu każdej pozycji.
+
+Stosowanie biblioteki \textbf{\texttt{json}} pozwala w łatwy sposób odczytać wybrane pola takiego pliku.
+Przykład kodu wyświetlający ścieżki plików ujęć:
+
+\begin{python}
+with open(input_json, "r") as read_file:
+   data = json.load(read_file)
+
+   for item in data['views']:
+      print(item['path'])
+\end{python}
+
+\subsection{Rysowanie danych}
+
+Do rysowania sceny 3D, a także rysowania wykresów i punktów na zdjęciach wykorzystana jest biblioteka \textbf{\texttt{matplotlib}}
+
+Poniewać dokładny wektor i kolor cechy są już znane wystarczy je podać jako argument dla funkcji rysującej zbiór punktów \texttt{scatter}.
+W podobny sposób rysowane są punkty kluczowe na płaszczyźnie zdjęcia(np. Rysunek \ref{fig:feature_A1_img_0}).
+
+Aby narysować ostrosłup przedstawiający kamerę, najpierw definiowane są współrzędne wektorów ostrosłupa w punkcie (0,0,0) a następnie wektory są obracane i przesuwane poprzez mnożenie o macierz rotacji i dodanie macierzy translacji odpowiedniej pozycji.
+
+Część kodu rysująca zbiór punktów kolorowych przedstawiających cechy i  ostrosłup przedstawiający kamerę na scenie 3D (np. Rysunek \ref{fig:preset_c2_normal}):
+
+\begin{python}
+# Zainicowac wykres w trybie trojwymiarowym:
+   fig = plt.figure()
+   ax = fig.add_subplot(111, projection='3d')
+
+# Dodac punkty:
+   ax.scatter(points.xs, points.ys, points.zs, marker='o', c=points.cs, s=point_size)
+
+# Dodac kamere:
+   # Narysować uklad wspolrzednych:
+   ax.quiver(*origin, a[:,0], a[:,1], a[:,2], color='b')
+
+   # Narysowac płaszczyzny ostroslupa:
+   ax.add_collection3d(Poly3DCollection(cam, facecolors='#00ff00', edgecolors='r', alpha=.25))
+   ax.add_collection3d(Poly3DCollection(cam_face, facecolors='#ffff00', edgecolors='r', alpha=.5))
+
+   # Podpisac kamere:
+   ax.text(*txt_pos, name, color='#cc0000', fontsize=14)
+\end{python}
+
+Funkcja \texttt{ax2 = ax1.twinx()} pozwala dodać nowy obszczar danych do istniejącego wykresu. W wyniku otrzymując wykres z podwójną osią Y którego dane mogą mieć róźną skalę (np. Rysunek \ref{fig:measure_c0}.
+
 \subsection{Pomiar czasu}

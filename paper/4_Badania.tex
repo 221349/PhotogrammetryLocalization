@@ -44,15 +44,14 @@ W badaniu przeprowadzona analiza wyników przetwarzania zestawów zdjęć, każd
 
 Wyniki są wygenerowane w następujących postaciach:
 \begin{itemize}
-   \item Rekonstrukcja sceny w przestrzenie trójwymiarowej, zawiera zbiór punktów kluczowych i wykrytych pozycji kamery wraz. Nazwa pozycji odpowiada nazwie pliku zdjęcia. Scena generowana jest za pomocą skryptu "plot.py".
-   \item Oznaczone wspólne punkty kluczowe dla wybranych zdjęć. Na rekonstrukcji sceny punkty są oznaczone gwiazdką i promieniem cągnącym się promieniem od miejsca kamery wraz z przydzieloną literą. Na zdjęciu punkty są oznaczone fioletowym fioletowym kółkiem i odpowiednią literą. Wykres generowany jest za pomocą skryptu "plot.py".
+   \item Rekonstrukcja sceny w przestrzenie trójwymiarowej, zawiera zbiór punktów kluczowych i wykrytych pozycji kamery wraz. Nazwa pozycji odpowiada nazwie pliku zdjęcia.
+   \item Oznaczone wspólne punkty kluczowe dla wybranych zdjęć. Na rekonstrukcji sceny punkty są oznaczone gwiazdką i promieniem cągnącym się promieniem od miejsca kamery wraz z przydzieloną literą. Na zdjęciu punkty są oznaczone fioletowym fioletowym kółkiem i odpowiednią literą.
    \item Wykres zależności czasu wykonywania, procentu wykrytych ujęć i powodzenia na etapie rekonstrukcji sceny od ustawień parametru transformacji SIFT.
    \begin{itemize}
       \item  Na czerwono: czas w sekundach
       \item  Na niebiesko: wykryte ujęcia w procentach
       \item  Na zielono: procent udanych prób rekonstrukcji sceny, może przyjmować wartość 0 (próba nieudana) lub 100 (rekonstrukcja powiodła się), wartość pomiędzy 0 a 100 oznaczała by błąd pod czas wykonywania pomiarów.
    \end{itemize}
-    Wykres generowany jest za pomocą skryptu "batch.py".
 \end{itemize}
 
 \section{Odtwarzanie sceny z róźną zawartością. Wykrycie i dopasowanie cech}
@@ -60,7 +59,7 @@ Wyniki są wygenerowane w następujących postaciach:
    \centering
    \includegraphics[width=5cm]{feature_mark/03.png}
    \includegraphics[width=5cm]{feature_mark/07.png}
-   \caption{Wybrane punkty charakterystyczne, zdjęcie 03 i 07, scena "A1"}
+   \caption{Wybrane punkty charakterystyczne, zdjęcie 03 i 07, scena "mark"}
    \label {fig:feature_mark_03_07}
 \end{figure}
 

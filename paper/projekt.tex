@@ -1,7 +1,7 @@
 %\documentclass[eng, draft, openany]{mgr} %Draft
-%\documentclass[eng, openany]{mgr} %Draft with img
+\documentclass[eng, openany]{mgr} %Draft with img
 
-\documentclass[eng, printmode, final]{mgr} %Print
+%\documentclass[eng, printmode, final]{mgr} %Print
 
 \usepackage{polski}
 \usepackage[utf8x]{inputenc}
@@ -25,6 +25,11 @@
 
 %pakiet wypisujący na marginesie etykiety równań i rysunków zdefiniowanych przez \label{}, chcąc wygenerować finalną wersję dokumentu wystarczy usunąć poniższą linię
 \usepackage{showlabels}
+
+\usepackage{pythonhighlight}
+
+\usepackage{tikz}
+\usetikzlibrary{trees}
 
 %definicje własnych poleceń
 \newcommand{\R}{I\!\!R} %symbol liczb rzeczywistych, działa tylko w trybie matematycznym
